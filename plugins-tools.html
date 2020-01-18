@@ -1,0 +1,135 @@
+<!doctype html>
+<html class="no-js" lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plugins & Tools | Sean Soraghan</title>
+    <link rel="stylesheet" href="css/foundation.css">
+    <link rel="stylesheet" href="css/app.css">
+    <link href="https://fonts.googleapis.com/css?family=Heebo|Montserrat+Alternates" rel="stylesheet">
+    <link rel="icon" href="images/icon-main.png">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  </head>
+  <body>
+
+    <!-- ================================================================================================= -->
+    <!-- Navigation -->
+    <!-- ================================================================================================= -->
+
+    <div id="topbar" class="grid-container full stick-to-top">
+      <div class="grid-x title-nav align-middle">
+        <div class="cell small-8 medium-8 large-8 title-section cEmpty">
+            <div class="grid-container fluid">
+                <div class="grid-x">
+                    <div class="cell shrink icon-img">
+                        <a href="index.html"><ul class="menu icon-img"></ul></a>
+                    </div>
+                    <div class="cell auto">
+                        <ul class="menu"><li><a href="index.html" class="title-text cEmpty montserrat">Sean Soraghan</a></li></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="cell small-4 medium-4 large-4 right-text title-section cEmpty">
+          <ul class="dropdown menu align-right menu-text" data-dropdown-menu>
+            <li>
+              <a href="#0" class="right-text nav-text heebo">Tools</a>
+              <ul class="menu vertical align-right heebo">
+                <li><a href="index.html" class="nav-text">Home</a></li>
+                <li><a href="about.html" class="nav-text">About</a></li>
+                <li><a href="plugins-tools.html" class="nav-text">Plugins & Tools</a></li>
+                <li><a href="games.html" class="nav-text">Games</a></li>
+                <li><a href="cv.html" class="nav-text">CV</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div id="main-content" class="plugins-main-content plugins-page-img page-background"><!--tools-background fill-inner-height-->
+      <div id="intro" class="full-page">
+        <div class="grid-y fill-inner-height">
+          <div class="cell small-4"></div>
+          <p class="tools-text text-center text-light montserrat">
+            Below are links to some plugins and tools I have developed or worked on over the years.
+          </p>
+        </div>
+      </div>
+      <div id="3dmeter" class="full-page tools-meter-img img-background-scroll">
+        <div class="grid-y fill-inner-height">
+          <!-- <div class="cell small-1"></div>
+          <div class="cell small-1 text-center text-light title-text cEmpty montserrat">
+            Wwise 3D Meter
+          </div> -->
+          <ul class="menu tool-link"><li><a id="3dmeter" class="title-text cEmpty montserrat">Wwise 3D Meter</a></li></ul>
+          <div class="cell small-2"></div>
+          <div class="cell small-8"> 
+            <div class="tools-text text-center text-light montserrat">
+              A 3D meter for monitoring ambisonic audio signals and this and that and this.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="spring" class="full-page tools-spring-img img-background-scroll">
+        <div class="grid-y fill-inner-height">
+          <ul class="menu tool-link"><li><a id="spring" class="title-text cEmpty montserrat">Unity Mass Spring System</a></li></ul>
+          <div class="cell small-2"></div>
+          <div class="cell small-8"> 
+            <div class=" tools-text text-center text-light montserrat">
+                A mass-spring physical model effect developed using compute shaders in Unity.
+            </div>
+            </div>
+        </div>
+      </div>
+      <div id="juce" class="full-page tools-unrealjuce-img img-background-scroll">
+        <div class="grid-y fill-inner-height">
+          <ul class="menu tool-link"><li><a id="juce" class="title-text cEmpty montserrat">Unreal JUCE Plugin</a></li></ul>
+          <div class="cell small-2"></div>
+          <div class="cell small-8"> 
+            <div class=" tools-text text-center text-light montserrat">
+                A plugin for Unreal that links the JUCE audio library and provides some examples.
+            </div>
+            </div>
+        </div>
+      </div>
+      <div id="feature-extractor" class="full-page tools-featureextractor-img img-background-scroll">
+        <div class="grid-y fill-inner-height">
+          <ul class="menu tool-link"><li><a id="extractor" class="title-text cEmpty montserrat">Audio Feature Extractor</a></li></ul>
+          <div class="cell small-2"></div>
+          <div class="cell small-8"> 
+            <div class=" tools-text text-center text-light montserrat">
+                A real-time audio feature extraction tool developed using the JUCE C++ library.
+            </div>
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <script src='js/helpers/open_new_tab.js'></script>
+    <script>
+      $( "#3dmeter" ).click(function() {
+        //window.location.replace("https://blog.audiokinetic.com/visualizing-ambisonics-with-the-3d-meter/");
+        open_tabbed_link('https://blog.audiokinetic.com/visualizing-ambisonics-with-the-3d-meter/');
+      });
+
+      $( "#spring" ).click(function() {
+        open_tabbed_link("https://assetstore.unity.com/packages/tools/physics/mass-spring-system-81451");
+      });
+
+      $( "#juce" ).click(function() {
+        open_tabbed_link("https://github.com/WeAreROLI/JUCEUnrealBridge");
+      });
+
+      $( "#extractor" ).click(function() {
+        open_tabbed_link("https://github.com/SeanSoraghan/Feature-Extractor");
+      });
+    </script>
+
+    <script src="js/vendor/jquery.js"></script>
+    <script src="js/vendor/what-input.js"></script>
+    <script src="js/vendor/foundation.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>

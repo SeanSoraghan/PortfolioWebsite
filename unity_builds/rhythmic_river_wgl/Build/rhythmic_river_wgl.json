@@ -1,0 +1,16 @@
+{
+"companyName": "DefaultCompany",
+"productName": "MGJ18",
+"productVersion": "0.1",
+"dataUrl": "rhythmic_river_wgl.data.unityweb",
+"wasmCodeUrl": "rhythmic_river_wgl.wasm.code.unityweb",
+"wasmFrameworkUrl": "rhythmic_river_wgl.wasm.framework.unityweb",
+"graphicsAPI": ["WebGL 2.0","WebGL 1.0"],
+"webglContextAttributes": {"preserveDrawingBuffer": false},
+"splashScreenStyle": "Dark",
+"backgroundColor": "#231F20",
+"cacheControl": {"default": "must-revalidate"},
+"developmentBuild": false,
+"multithreading": false,
+"unityVersion": "2019.2.0f1"
+}

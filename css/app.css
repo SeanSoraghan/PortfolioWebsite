@@ -1,0 +1,404 @@
+/*-----------------------------------*/
+/* Foundation Extensions */
+/*-----------------------------------*/
+.callout{
+    background-color: rgb(25, 75, 85);
+}
+
+/*-----------------------------------*/
+/* Remove border */
+/*-----------------------------------*/
+.callout.cEmpty{
+    border: 0;
+}
+
+/*-----------------------------------*/
+/* THREE.js */
+/*-----------------------------------*/
+.three-container{
+    width: 100%;
+    align-content: center;
+    height: 20rem;
+}
+
+.three-canvas {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    /*border-radius: 3%;*/
+    touch-action: none;
+}
+
+/*-----------------------------------*/
+/* Sections */
+/*-----------------------------------*/
+/* Icon Colors: 
+    HSL: 125, 85, 80. 
+    RGB: 55, 105, 115
+*/
+.home-main-content{
+    height: calc(100vh - 50px);
+}
+
+.about-main-content{
+    height: calc(100vh - 100px);
+}
+
+.games-main-content{
+    height: calc(100vh - 100px);
+}
+
+.full-page{
+    height: calc(100vh - 50px);
+}
+
+.plugins-main-content{
+    height: calc(4 * (100vh - 50px));/*calc(5*40vh + 5*5vh);*/
+}
+
+.title-section{
+    background-color: rgb(25, 75, 85);
+}
+
+/*-----------------------------------*/
+/* Sticky */
+/*-----------------------------------*/
+.stick-to-top{
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: 0;
+    z-index: 255;
+    width: 100%;
+    /*overflow-x: hidden;*/
+    height: 50px;
+}
+
+.stick-to-top .is-dropdown-submenu{
+    position: absolute;
+    z-index: 260;
+}
+
+.stick-to-bottom{
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: 50px;/*calc(100vh - 50px);*/
+    z-index: 200;
+    width: 100%;
+    /*overflow-x: hidden;*/
+    height: 50px;
+}
+
+/*-----------------------------------*/
+/* Image Backgrounds */
+/*-----------------------------------*/
+.home-page-img{
+    background: url("../images/HomeBackground.png");
+}
+
+.about-page-img{
+    background: url("../images/AboutBackground.png");
+}
+
+.plugins-page-img{
+    background: url("../images/PluginsBackground.png");
+}
+
+.games-page-img{
+    background: url("../images/GamesBackgroundKeys.png");
+}
+
+.about-outro-img{
+    background: url("../images/rocker.gif");
+}
+
+.tools-meter-img{
+    background: url("../images/PluginsTools/3DMeter.png");
+}
+
+.tools-spring-img{
+    background: url("../images/PluginsTools/MassSpring.png");
+}
+
+.tools-unrealjuce-img{
+    background: url("../images/PluginsTools/UnrealJUCE.png");
+}
+
+.tools-featureextractor-img{
+    background: url("../images/PluginsTools/FeatureExtractor.png");
+}
+
+.page-background{
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+.tiled-background{
+    background-size: contain;
+    background-repeat: repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+.img-background{
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+.img-background-scroll{
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    background-position: top;
+    /* filter: blur(2px); */
+    /*background-blend-mode: overlay;*/
+}
+/*-----------------------------------*/
+/* Menu & Link Color */
+/*-----------------------------------*/
+.dropdown.menu > li.is-dropdown-submenu-parent > a::after{
+    border-color: #FFFFFF rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
+    color: white;
+}
+
+.dropdown.menu > li.is-dropdown-submenu-parent > a:link{
+    color: white;
+}
+.dropdown.menu > li.is-dropdown-submenu-parent > a:visited{
+    color: white;
+}
+.dropdown.menu > li.is-dropdown-submenu-parent > a:hover{
+    color: white;
+}
+.dropdown.menu > li.is-dropdown-submenu-parent > a:active{
+    color: white;
+}
+
+.menu > li > a:link{
+    color: white;
+}
+.menu > li > a:visited{
+    color: white;
+}
+.menu > li > a:hover{
+    color: white;
+}
+.menu > li > a:active{
+    color: white;
+}
+
+a{
+    color: white;
+}
+a.link{
+    color: white;
+}
+a.visited{
+    color: white;
+}
+a.hover{
+    color: white;
+}
+a.active{
+    color: white;
+}
+
+.is-dropdown-submenu{
+    background-color: rgb(25, 75, 85);
+}
+.is-submenu-item .is-dropdown-submenu-item{
+    background-color: rgb(25, 75, 85);
+}
+/*-----------------------------------*/
+/* Unity Canvas Controls */
+/*-----------------------------------*/
+.unity-demo{
+    width: 800px; 
+    height: 344px; 
+    margin: 0 auto;
+}
+.fullscreen-button{
+    /*background-image: url('unity_builds/in_the_dark/TemplateData/fullscreen.png');
+    background-size: contain;
+    width: 38px;*/
+    height: 100%;
+    margin: none;
+    object-fit: contain;
+    float: right;
+}
+/*-----------------------------------*/
+/* Nav UI */
+/*-----------------------------------*/
+.block-button{
+    background: url("../images/CircleButtonBlock.png");
+}
+.filled-button{
+    background: url("../images/CircleButtonWhiteCentre.png") cover;
+}
+.nav-bar{
+    background: rgb(25, 75, 85);/*rgb(240,240,240);*/
+}
+.title-nav{
+    height: 50px;
+    background-color: rgb(25, 75, 85);
+}
+
+/*-----------------------------------*/
+/* Text */
+/*-----------------------------------*/
+p{
+    line-height: 1.8;
+    color: rgb(75, 75, 75);
+    text-align:  justify;
+}
+.montserrat{
+    font-family: 'Montserrat Alternates', sans-serif;
+}
+.heebo{
+    font-family: 'Heebo', sans-serif;
+}
+.text-dark{
+    color: rgb(75, 75, 75);
+}
+.text-light{
+    color: rgb(200, 200, 200);
+}
+
+.right-text{
+    text-align: right;
+}
+.title-text{
+    color: white;
+    white-space: nowrap;
+    background-color: rgb(25, 75, 85);
+}
+.menu-text{
+    background-color: rgb(25, 75, 85);
+}
+.text-center{
+    text-align: center;
+}
+.about-intro-text{
+    max-width: 300px;
+}
+.demo-text-container{
+    max-width: 600px;
+}
+.demo-text{
+    text-align: justify;
+    text-align-last: center;
+}
+/*-----------------------------------*/
+/* Images */
+/*-----------------------------------*/
+.icon-img{
+    background: url("../images/icon-main.png") no-repeat;
+	background-size: cover;
+	background-position: center center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.home-img{
+    border-radius: 50%;
+    max-width: 300px;
+}
+
+.about-img{
+    max-width: 100px;
+    max-height: 100px;
+    align-content: center;
+    border-radius: 50%;
+}
+
+.vertical-list-portfolio-image{
+    max-height: 500px;
+    object-fit: contain;
+    align-content: center;
+}
+
+.button-icon{
+    height: 100%;
+    margin: none;
+    object-fit: contain;
+    align-content: center;
+}
+
+.nav-button-icon{
+    height: 100%;
+    margin: none;
+    object-fit: contain;
+    align-content: center;
+}
+/*-----------------------------------*/
+/* Misc */
+/*-----------------------------------*/
+.start-hidden{
+    visibility: hidden;
+}
+
+.centre-content{
+    justify-content: center;
+    text-align: center;
+}
+
+.full-height{
+    height: calc(100vh);
+}
+.fill-inner-height{
+    height: 100%;
+}
+.half-inner-height{
+    height: 50%;
+}
+.full-width{
+    padding: 0;
+    margin: 0;
+    align-content: center;
+}
+.empty-line{
+    height: 10px;
+}
+.tools-intro{
+    width: 80%;
+    max-width: 600px;
+    height: 40vh;
+    margin: 0 auto;
+}
+.tools-text{
+    width: 60%;
+    margin: 0 auto;
+    max-width: 300px;
+    min-width: 200px;
+}
+.tool-link{
+    /*cursor: pointer;
+    border-radius: 50%;*/
+    /*margin-left: 10%;
+    margin-right: 10%;*/
+    /*width: 80%;
+    max-width: 300px;
+    height: 40vh;
+    margin: 0 auto;
+    margin-top: 5vh;*/
+    width: 100%;
+}
+.tool-link-last{
+    margin-bottom: 5vh;
+}
+
+.debug-pink{
+    background-color: pink;
+}
+.debug-lime{
+    background-color: lime;
+}
+.debug-black{
+    background-color: black;
+}

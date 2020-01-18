@@ -1,0 +1,293 @@
+<!doctype html>
+<html class="no-js" lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About | Sean Soraghan</title>
+    <link rel="stylesheet" href="css/foundation.css">
+    <link rel="stylesheet" href="css/app.css">
+    <link href="https://fonts.googleapis.com/css?family=Heebo|Montserrat+Alternates" rel="stylesheet">
+    <link rel="icon" href="images/icon-main.png">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  </head>
+
+    <script data-src="shaders/waves/vert.js" data-name="waves" type="x-shader/x-vertex"></script>
+    <script data-src="shaders/waves/frag.js" data-name="waves" type="x-shader/x-fragment"></script>
+    <script data-src="shaders/drip/vert.js" data-name="drip" type="x-shader/x-vertex"></script>
+    <script data-src="shaders/drip/frag.js" data-name="drip" type="x-shader/x-fragment"></script>
+    <script data-src="shaders/circles/vert.js" data-name="circles" type="x-shader/x-vertex"></script>
+    <script data-src="shaders/circles/frag.js" data-name="circles" type="x-shader/x-fragment"></script>
+    <script data-src="shaders/spiral/vert.js" data-name="spiral" type="x-shader/x-vertex"></script>
+    <script data-src="shaders/spiral/frag.js" data-name="spiral" type="x-shader/x-fragment"></script>
+    <script data-src="shaders/sphere-vertex-extrusion/vert.js" data-name="sphere" type="x-shader/x-vertex"></script>
+    <script data-src="shaders/sphere-vertex-extrusion/frag.js" data-name="sphere" type="x-shader/x-fragment"></script>
+    <script src="js/threejs/build/three.js"></script>
+    <script src="js/threeJSDemo.js"></script>
+    <script src="js/shaderLoadedCallbacks.js"></script>
+    <script src="js/synth-feature-extractor.js"></script>
+    <script src="js/threeDemoContexts.js"></script>
+    <script src="shaders/loader/ShaderLoader.min.js"></script>
+
+    <script>
+        var contextPaused = true;
+        var context;
+        var wavesSynth;
+    </script>
+  <!--body scroll="no" style="overflow: hidden"-->
+  <body scroll="no" style="overflow: hidden"><!-- onmousedown="initAudioContext(event)"> -->
+    <!-- https://www.html5rocks.com/en/tutorials/webaudio/intro/ -->
+    <script>
+        /*window.addEventListener('resize', function()
+        {
+            window.scroll(0, 200);// here should scroll to the currently viewed section (need to store current section, and change it when section nav buttons are pressed.)
+        })*/
+        //context;
+
+        window.addEventListener('load', init, false);
+
+        function init() {
+          // while page is loading, should rotate my face slowly ...
+          //$( "#section1" ).hide( );
+          //document.getElementById('section1').scrollIntoView();
+          try {
+            // Fix up for prefixing
+            window.AudioContext = window.AudioContext||window.webkitAudioContext;
+            context = new AudioContext();
+          }
+          catch(e) {
+            alert('Web Audio API is not supported in this browser');
+          }
+        }
+        //https://developers.google.com/web/updates/2017/09/autoplay-policy-changes#webaudio
+        function resumeAudio()
+        {
+            if (contextPaused && context)
+            {
+                context.resume().then(() => 
+                {
+                    wavesSynth = new Synth(context, 512, 0, 300);
+                    wavesSynth.attackTime = 0.9;
+                    wavesSynth.filter.frequency.value = 500.0;
+                    console.log('Playback resumed successfully');
+                    contextPaused = false;
+                });
+            }
+        }
+        window.addEventListener('mousedown', function() 
+        {
+            if (contextPaused)
+                resumeAudio();
+        });
+        window.addEventListener('touchstart', function() 
+        {
+            if (contextPaused)
+                resumeAudio();
+        });
+    </script>
+    <!-- ================================================================================================= -->
+    <!-- Navigation -->
+    <!-- ================================================================================================= -->
+
+    <div id="topbar" class="grid-container full stick-to-top">
+      <div class="grid-x title-nav align-middle">
+        <div class="cell small-8 medium-8 large-8 title-section cEmpty">
+            <div class="grid-container fluid">
+                <div class="grid-x">
+                    <div class="cell shrink icon-img">
+                        <a href="index.html"><ul class="menu icon-img"></ul></a>
+                    </div>
+                    <div class="cell auto">
+                        <ul class="menu"><li><a href="index.html" class="title-text cEmpty montserrat">Sean Soraghan</a></li></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="cell small-4 medium-4 large-4 right-text title-section cEmpty">
+          <ul class="dropdown menu align-right menu-text" data-dropdown-menu>
+            <li>
+              <a href="#0" class="right-text heebo">About</a>
+              <ul class="menu vertical align-right heebo">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="plugins-tools.html">Plugins & Tools</a></li>
+                <li><a href="games.html">Games</a></li>
+                <li><a href="cv.html">CV</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div id="bottombar" class="stick-to-bottom">
+        <div id="nav-buttons" class="grid-x fill-inner-height small-margin-collapse align-center nav-bar">
+            <div id="nav-b-left" class="cell auto medium-1 fill-inner-height centre-content start-hidden">
+                <img src="images/NavLeftPadded.png" class="nav-button-icon">
+            </div>
+            <div class="cell auto medium-1 fill-inner-height centre-content">
+                <img id="nav-b-0" src="images/CircleButtonWhiteCentrePadded.png" class="button-icon">
+            </div>
+            <div class="cell auto medium-1 fill-inner-height centre-content">
+                <img id="nav-b-1" src="images/CircleButtonBlockPadded.png" class="button-icon">
+            </div>
+            <div class="cell auto medium-1 fill-inner-height centre-content">
+                <img id="nav-b-2" src="images/CircleButtonBlockPadded.png" class="button-icon">
+            </div>
+            <div class="cell auto medium-1 fill-inner-height centre-content">
+                <img id="nav-b-3" src="images/CircleButtonBlockPadded.png" class="button-icon">
+            </div>
+            <div class="cell auto medium-1 fill-inner-height centre-content">
+                <img id="nav-b-4" src="images/CircleButtonBlockPadded.png" class="button-icon">
+            </div>
+            <div id="nav-b-right" class="cell auto medium-1 fill-inner-height centre-content">
+                <img src="images/NavRightPadded.png" class="nav-button-icon">
+            </div>
+        </div>
+    </div>
+
+    <!-- ================================================================================================= -->
+    <!-- About Page Content -->
+    <!-- ================================================================================================= -->
+
+    <div id="main-content" class="about-main-content">
+        <div id="intro" class="about-page-img page-background fill-inner-height full-width">
+            <div class="grid-y fill-inner-height">
+                <div class="cell small-2"></div>
+                <div class="cell small-3 fill-inner-height align-middle">
+                    <img src="images/me.jpg" class="float-center about-img cEmpty">
+                </div>
+                <div id="intro-text" class="cell small-4">
+                    <div class="grid-x align-center">
+                        <div class="cell small-10 about-intro-text">
+                            <p class="text-light montserrat">
+                                I'm an experienced software developer, designing and implementing real-time interactive systems, usually in C++. 
+                                I'm currently based in Glasgow, Scotland, working remotely for Montreal-based software company Audiokinetic.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="demos" class="fill-inner-height full-width">
+            <div class="grid-y fill-inner-height">
+                <div id="three-demo-container" class="cell small-9 fill-inner-height align-middle">
+                    <canvas id="three-demo-canvas" class="three-canvas"></canvas>
+                </div>
+                <div class="cell small-1"></div>
+                <div id="demos-text" class="cell small-1">
+                    <div class="grid-x align-center">
+                        <div class="cell small-10 demo-text-container">
+                            <p id="demo-blurb" class="demo-text montserrat">
+                                Some text explaining the thing above, especially highlighting its key qualities.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="outro" class="about-outro-img img-background fill-inner-height full-width">
+            <div class="grid-y fill-inner-height">
+                <!-- <div class="cell small-9 rocker-background"></div> -->
+                <div class="cell small-10"></div>
+                <div id="outro-text" class="cell small-1">
+                    <div class="grid-x align-center">
+                        <div class="cell small-10 demo-text-container">
+                            <p class="demo-text text-light montserrat">
+                                I like things that oscillate.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        var threeDemo = null;
+        var demoContext = null;
+        var loadWavesDemo = function()
+        {
+            $("#demo-blurb").text("I like using and creating fun and/or useful interactive things.");
+            demoContext = new wavesContext();
+            threeDemo = new ThreeJSDemo ("three-demo-container", "three-demo-canvas", 'shaders/waves/frag.js', 'shaders/waves/vert.js', planeShadersLoadedCallback, demoContext);
+            var maxFreq = 1000.0;
+            var minFreq = 200.0;
+            demoContext.updateSynthParams = function()
+            {
+                if (wavesSynth)
+                {
+                    demoContext.uniforms.rms.value = wavesSynth.rms * 5.0;
+                    demoContext.uniforms.pitch.value = (wavesSynth.centreFrequency - minFreq) / (maxFreq - minFreq);
+                    // harmonicsMultiplier goes from 0. - 0.5.
+                    demoContext.uniforms.detune.value = wavesSynth.harmonicsMultiplier + 0.5;
+                }
+            }
+            threeDemo.customUniformsContext = demoContext;
+            function wavesMouseHandler()
+            {
+                this.mouseDown = function(normedMouseEvent)
+                {
+                    if (wavesSynth)
+                    {
+                        var pitch = normedMouseEvent.x;
+                        var harmonicsMultiplier = (1.0 - normedMouseEvent.y) * 0.5;
+                        wavesSynth.harmonicsMultiplier = harmonicsMultiplier;
+                        wavesSynth.centreFrequency = pitch * (maxFreq - minFreq) + minFreq;
+                        wavesSynth.trigger(0.1);
+                    }
+                }
+            }
+            threeDemo.mouseHandler = new wavesMouseHandler();
+        }
+        var loadSphereDemo = function()
+        {
+            $('#demo-blurb').text("I like things that combine audio, graphics and interaction design.");
+            threeDemo = new ThreeJSDemo ("three-demo-container", "three-demo-canvas", 'shaders/sphere-vertex-extrusion/frag.js', 'shaders/sphere-vertex-extrusion/vert.js', sphereShadersLoadedCallback);
+        }
+        var loadSpringDemo = function()
+        {
+            $('#demo-blurb').text("I like things that encourage creativity, playfulness and exploration.");
+            demoContext = new massSpringStringContext();
+            threeDemo = new ThreeJSDemo ("three-demo-container", "three-demo-canvas", 'shaders/circles/frag.js', 'shaders/circles/vert.js', planeShadersLoadedCallback, demoContext);
+        }
+        var demoLoadFunctions = [loadWavesDemo, loadSphereDemo, loadSpringDemo];
+        
+        var fn_load_content = function(i_section_index)
+        {
+            if (i_section_index == 0)
+            {
+                expand_div("#intro");
+            }
+            else if (i_section_index < i_num_sections - 1)
+            {
+                collapse_div("#intro");
+                expand_div("#demos", function()
+                {
+                    if (threeDemo)
+                    {
+                        threeDemo.swap = demoLoadFunctions[i_section_index - 1];
+                    }
+                    else
+                    {   
+                        demoLoadFunctions[i_section_index - 1]();
+                    }
+                });
+            }
+            else
+            {
+                collapse_div("#intro");
+                collapse_div("#demos")
+                expand_div("#outro");
+            }
+        }
+
+        var i_num_sections = 5;
+    </script>
+    <script src="js/nav.js"></script>
+
+    <script src="js/vendor/what-input.js"></script>
+    <script src="js/vendor/foundation.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
