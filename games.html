@@ -81,19 +81,19 @@
     <!-- ================================================================================================= -->
     <!-- Games Page Content -->
     <!-- ================================================================================================= -->
-    <div id="main-content" class="games-main-content">
+    <div id="main-content" class="full-page-bottom-bar">
         <div id="intro" class="games-page-img page-background fill-inner-height full-width">
             <div class="grid-y fill-inner-height">
                 <div class="cell small-1">
                 </div>
                 <div id="intro-text" class="cell small-11">
                     <div class="grid-x align-center">
-                        <div class="cell small-10 about-intro-text">
+                        <div class="cell small-10 para-thin">
                             <p class="text-light montserrat">
-                                Although most of my experience is in creating plugins and tools, I very much enjoy game development. It combines many of my 
+                                Although most of my experience is in creating plugins and tools, I very much enjoy game development. It combines many of my
                                 favourite things: coding, sound design & interactive audio, graphics & animation, interaction design, AI, and more... I usually
-                                create games during game jams or similar events. The following games were created under severe time restrictions, so 
-                                please judge them accordingly! 
+                                create games during game jams or similar events. The following games were created under severe time restrictions, so
+                                please judge them accordingly!
                             </p>
                         </div>
                     </div>
@@ -111,11 +111,11 @@
                         </div>
                     </div>
                 </div>
-                <p id="game-name" class="cell small-1 text-center montserrat">Sense Data</p>
+                <div id="game-name" class="cell small-1 text-center montserrat">Sense Data</div>
                 <div id="demos-text" class="cell small-3">
                     <div class="grid-x align-center">
-                        <div class="cell small-10 demo-text-container">
-                            <p id="demo-blurb" class="demo-text montserrat">
+                        <div class="cell small-10 para-wide">
+                            <p id="demo-blurb" class="montserrat">
                                 A philosophy-themed puzzle game that uses extracts from Bertrand Russell's "The Problems of Philosophy".
                             </p>
                         </div>
@@ -123,24 +123,9 @@
                 </div>
             </div>
         </div>
-<!--         <div id="intro" class="games-page-img page-background fill-inner-height full-width">
-            <div class="grid-y fill-inner-height">
-                <div class="cell small-1">
-                </div>
-                <div id="intro-text" class="cell small-11">
-                    <div class="grid-x align-center">
-                        <div class="cell small-10 about-intro-text">
-                            <p class="text-light">
-                                Thank you! 
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> -->
-    </div>    
+    </div>
 
-    
+
     <script>
         var loadRhythmicRiver = function()
         {
@@ -160,9 +145,9 @@
             $('#game-name').text("In The Dark")
             game_instance = UnityLoader.instantiate("unityContainer", "unity_builds/in_the_dark/Build/WebGL.json", {onProgress: UnityProgress});
         }
-        
+
         var demoLoadFunctions = [loadSenseData, loadRhythmicRiver, loadInTheDark];
-        
+
         var fn_load_content = function(i_section_index)
         {
             if (game_instance != null)

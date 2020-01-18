@@ -64,7 +64,7 @@
         {
             if (contextPaused && context)
             {
-                context.resume().then(() => 
+                context.resume().then(() =>
                 {
                     wavesSynth = new Synth(context, 512, 0, 300);
                     wavesSynth.attackTime = 0.9;
@@ -74,12 +74,12 @@
                 });
             }
         }
-        window.addEventListener('mousedown', function() 
+        window.addEventListener('mousedown', function()
         {
             if (contextPaused)
                 resumeAudio();
         });
-        window.addEventListener('touchstart', function() 
+        window.addEventListener('touchstart', function()
         {
             if (contextPaused)
                 resumeAudio();
@@ -150,7 +150,7 @@
     <!-- About Page Content -->
     <!-- ================================================================================================= -->
 
-    <div id="main-content" class="about-main-content">
+    <div id="main-content" class="full-page-bottom-bar">
         <div id="intro" class="about-page-img page-background fill-inner-height full-width">
             <div class="grid-y fill-inner-height">
                 <div class="cell small-2"></div>
@@ -159,9 +159,9 @@
                 </div>
                 <div id="intro-text" class="cell small-4">
                     <div class="grid-x align-center">
-                        <div class="cell small-10 about-intro-text">
+                        <div class="cell small-10 para-thin">
                             <p class="text-light montserrat">
-                                I'm an experienced software developer, designing and implementing real-time interactive systems, usually in C++. 
+                                I'm an experienced software developer, designing and implementing real-time interactive systems, usually in C++.
                                 I'm currently based in Glasgow, Scotland, working remotely for Montreal-based software company Audiokinetic.
                             </p>
                         </div>
@@ -177,8 +177,8 @@
                 <div class="cell small-1"></div>
                 <div id="demos-text" class="cell small-1">
                     <div class="grid-x align-center">
-                        <div class="cell small-10 demo-text-container">
-                            <p id="demo-blurb" class="demo-text montserrat">
+                        <div class="cell small-10 para-wide">
+                            <p id="demo-blurb" class="text-dark montserrat">
                                 Some text explaining the thing above, especially highlighting its key qualities.
                             </p>
                         </div>
@@ -192,17 +192,17 @@
                 <div class="cell small-10"></div>
                 <div id="outro-text" class="cell small-1">
                     <div class="grid-x align-center">
-                        <div class="cell small-10 demo-text-container">
-                            <p class="demo-text text-light montserrat">
+                        <div class="cell small-10 para-wide">
+                            <div class="text-light montserrat">
                                 I like things that oscillate.
-                            </p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <script>
         var threeDemo = null;
         var demoContext = null;
@@ -252,9 +252,10 @@
             threeDemo = new ThreeJSDemo ("three-demo-container", "three-demo-canvas", 'shaders/circles/frag.js', 'shaders/circles/vert.js', planeShadersLoadedCallback, demoContext);
         }
         var demoLoadFunctions = [loadWavesDemo, loadSphereDemo, loadSpringDemo];
-        
+
         var fn_load_content = function(i_section_index)
         {
+            console.log("load content: " + i_section_index);
             if (i_section_index == 0)
             {
                 expand_div("#intro");
@@ -262,6 +263,7 @@
             else if (i_section_index < i_num_sections - 1)
             {
                 collapse_div("#intro");
+                console.log("collapsed intro. loading demo: " + i_section_index);
                 expand_div("#demos", function()
                 {
                     if (threeDemo)
@@ -269,7 +271,7 @@
                         threeDemo.swap = demoLoadFunctions[i_section_index - 1];
                     }
                     else
-                    {   
+                    {
                         demoLoadFunctions[i_section_index - 1]();
                     }
                 });
