@@ -11,42 +11,19 @@
     <link rel="icon" href="images/icon-main.png">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   </head>
-  <body>
+
+  <script src="js/check_screen_width.js"></script>
+  <body onresize="screen_resized()">
 
     <!-- ================================================================================================= -->
     <!-- Navigation -->
     <!-- ================================================================================================= -->
-
-    <div id="topbar" class="grid-container full stick-to-top">
-      <div class="grid-x title-nav align-middle">
-        <div class="cell small-8 medium-8 large-8 title-section cEmpty">
-            <div class="grid-container fluid">
-                <div class="grid-x">
-                    <div class="cell shrink icon-img">
-                        <a href="index.html"><ul class="menu icon-img"></ul></a>
-                    </div>
-                    <div class="cell auto">
-                        <ul class="menu"><li><a href="index.html" class="title-text cEmpty montserrat">Sean Soraghan</a></li></ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="cell small-4 medium-4 large-4 right-text title-section cEmpty">
-          <ul class="dropdown menu align-right menu-text" data-dropdown-menu>
-            <li>
-              <a href="#0" class="right-text nav-text heebo">Tools</a>
-              <ul class="menu vertical align-right heebo">
-                <li><a href="index.html" class="nav-text">Home</a></li>
-                <li><a href="about.html" class="nav-text">About</a></li>
-                <li><a href="plugins-tools.html" class="nav-text">Plugins & Tools</a></li>
-                <li><a href="games.html" class="nav-text">Games</a></li>
-                <li><a href="cv.html" class="nav-text">CV</a></li>
-              </ul>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
+    <div id="nav-menu"></div>
+    <script>
+        menu_name = "Tools";
+        nav_menu_div = $('#nav-menu');
+        update_nav_menu();
+    </script>
 
     <div id="main-content" class="plugins-main-content plugins-page-img page-background"><!--tools-background fill-inner-height-->
       <div id="intro" class="full-page">
