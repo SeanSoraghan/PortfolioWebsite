@@ -38,22 +38,23 @@
             {
                 window.scroll(0, 200);// here should scroll to the currently viewed section (need to store current section, and change it when section nav buttons are pressed.)
             })*/
-            //context;
-
+            var context = null;
+            var contextPaused = true;
+            var wavesSynth = null;
             window.addEventListener('load', init, false);
 
-            function init() {
-            // while page is loading, should rotate my face slowly ...
-            //$( "#section1" ).hide( );
-            //document.getElementById('section1').scrollIntoView();
-            try {
-                // Fix up for prefixing
-                window.AudioContext = window.AudioContext||window.webkitAudioContext;
-                context = new AudioContext();
-            }
-            catch(e) {
-                alert('Web Audio API is not supported in this browser');
-            }
+            function init()
+            {
+                //$( "#section1" ).hide( );
+                //document.getElementById('section1').scrollIntoView();
+                try {
+                    // Fix up for prefixing
+                    window.AudioContext = window.AudioContext||window.webkitAudioContext;
+                    context = new AudioContext();
+                }
+                catch(e) {
+                    alert('Web Audio API is not supported in this browser');
+                }
             }
             //https://developers.google.com/web/updates/2017/09/autoplay-policy-changes#webaudio
             function resumeAudio()
