@@ -18,6 +18,7 @@
     <script>
         window.addEventListener('load', function()
         {
+            expand_horizontal_navigation(); // horizontal-navigation-x.html
             link_horizontal_buttons(); // nav_dynamic.js
         }, false);
     </script>
@@ -35,15 +36,6 @@
     <script src="unity_builds/in_the_dark/Build/UnityLoader.js"></script>
     <script>
         var game_instance = null;
-    </script>
-
-    <div id="horizontal_nav"></div>
-    <script>
-        var nav_left = null;
-        var nav_right = null;
-        var i_num_sections = 4;
-        var nav_horizontal_buttons = [];
-        $('#horizontal_nav').load('html-blocks/horizontal-navigation-4.html');
     </script>
 
     <!-- ================================================================================================= -->
@@ -93,7 +85,21 @@
         </div>
     </div>
 
+    <!-- ================================================================================================= -->
+    <!-- Horizontal Navigation -->
+    <!-- ================================================================================================= -->
+    <div id="horizontal_nav"></div>
+    <script>
+        var nav_left = null;
+        var nav_right = null;
+        var i_num_sections = 4;
+        var nav_horizontal_buttons = [];
+        $('#horizontal_nav').load('html-blocks/horizontal-navigation-4.html');
+    </script>
 
+    <!-- ================================================================================================= -->
+    <!-- Unity Builds -->
+    <!-- ================================================================================================= -->
     <script>
         var loadRhythmicRiver = function()
         {

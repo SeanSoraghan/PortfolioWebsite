@@ -94,15 +94,6 @@
             update_nav_menu();
         </script>
 
-        <div id="horizontal_nav" class=""></div>
-        <script>
-            var nav_left = null;
-            var nav_right = null;
-            var i_num_sections = 5;
-            var nav_horizontal_buttons = [];
-            $('#horizontal_nav').load('html-blocks/horizontal-navigation-5.html');
-        </script>
-
         <!-- ================================================================================================= -->
         <!-- About Page Content -->
         <!-- ================================================================================================= -->
@@ -143,15 +134,15 @@
                     </div>
                 </div>
             </div>
-            <div id="outro" class="about-outro-img img-background fill-inner-height full-width">
+            <div id="outro" class="img-background about-outro-img fill-inner-height full-width">
                 <div class="grid-y fill-inner-height">
                     <div class="cell small-10"></div>
                     <div id="outro-text" class="cell small-1">
                         <div class="grid-x align-center">
                             <div class="cell small-10 para-wide">
-                                <div class="text-light montserrat">
+                                <p class="text-light montserrat">
                                     I like things that oscillate.
-                                </div>
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -159,6 +150,21 @@
             </div>
         </div>
 
+        <!-- ================================================================================================= -->
+        <!-- Horizontal Navigation -->
+        <!-- ================================================================================================= -->
+        <div id="horizontal_nav" class=""></div>
+        <script>
+            var nav_left = null;
+            var nav_right = null;
+            var i_num_sections = 5;
+            var nav_horizontal_buttons = [];
+            $('#horizontal_nav').load('html-blocks/horizontal-navigation-5.html');
+        </script>
+
+        <!-- ================================================================================================= -->
+        <!-- Interactive Demos -->
+        <!-- ================================================================================================= -->
         <script>
             var threeDemo = null;
             var demoContext = null;

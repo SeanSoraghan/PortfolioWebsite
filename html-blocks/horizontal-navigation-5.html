@@ -1,5 +1,5 @@
-<div id="horizontal-nav-bar" class="stick-to-bottom">
-    <div id="nav-buttons" class="grid-x fill-inner-height small-margin-collapse align-center nav-bar">
+<div id="horizontal-nav-bar" class="horizontal-navigation-bottom">
+    <div id="nav-buttons" class="grid-x fill-inner-height small-margin-collapse align-center">
         <div id="nav-b-left" class="cell auto medium-1 fill-inner-height centre-content start-hidden">
             <img src="images/UI/LightOnDark/NavLeft.png" class="nav-button-icon">
         </div>
@@ -33,9 +33,9 @@
     {
         nav_horizontal_buttons.push($(str_nav_id_stem + i));
     }
-    $('#horizontal-nav-bar').hide(1, function(){console.log('hidden')});
+    $('#nav-buttons').hide(0, function(){console.log('hidden')});
     function expand_horizontal_navigation()
     {
-        expand_div('#horizontal-nav-bar', function(){console.log('expanded');});
+        expand_div('#nav-buttons', function(){console.log('expanded');});
     }
 </script>

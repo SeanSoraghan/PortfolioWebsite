@@ -1,4 +1,4 @@
-<div id="bottombar" class="stick-to-bottom">
+<div id="bottombar" class="horizontal-navigation-bottom">
     <div id="nav-buttons" class="grid-x fill-inner-height small-margin-collapse align-center nav-bar">
         <div id="nav-b-left" class="cell auto medium-1 fill-inner-height centre-content start-hidden">
             <img src="images/UI/LightOnDark/NavLeft.png" class="nav-button-icon">
@@ -29,5 +29,11 @@
     for (let i = 0; i < i_num_sections; ++i)
     {
         nav_horizontal_buttons.push($(str_nav_id_stem + i));
+    }
+    $('#nav-buttons').hide(0, function(){console.log('hidden')});
+    function expand_horizontal_navigation()
+    {
+        console.log('calling function expamnd');
+        expand_div('#nav-buttons', function(){console.log('expanded');});
     }
 </script>

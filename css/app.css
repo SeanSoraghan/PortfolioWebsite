@@ -41,6 +41,10 @@
 /*-----------------------------------*/
 /* Section Images */
 /*-----------------------------------*/
+/* About */
+.about-outro-img{
+    background: url("../images/rocker.gif");
+}
 /* General */
 .img-background{
     background-size: cover;
@@ -73,9 +77,7 @@
     align-content: center;
     border-radius: 50%;
 }
-.about-outro-img{
-    background: url("../images/rocker.gif");
-}
+
 /* Plugins And Tools */
 .tools-meter-img{
     background: url("../images/PluginsTools/3DMeter.png");
@@ -219,13 +221,23 @@ p{
     z-index: 260;
 }
 
-.stick-to-bottom{
+.horizontal-navigation{
     position: -webkit-sticky; /* Safari */
     position: sticky;
     top: 50px;
     z-index: 200;
     width: 100%;
     height: 50px;
+    background: rgb(25, 75, 85);
+}
+.horizontal-navigation-bottom{
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: calc(100vh - 50px);
+    z-index: 200;
+    width: 100%;
+    height: 50px;
+    background: rgb(25, 75, 85);
 }
 
 /*-----------------------------------*/
