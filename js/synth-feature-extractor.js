@@ -48,12 +48,12 @@ function Synth (audioCtx, windowSize, waveformType, freq)
       synth.sustainProportion = 0.8;
       synth.sustainTime = 0.3;
       synth.synthPitchOnRamp = 0.6;
+      synth.lastTriggerTime = 0.0;
       synth.trigger = function (velocity)
       {
         synth.releaseTime = velocity * 2.6 + 0.4;
         //synth.setFrequency (((position.x + 100.0) / 200.0) * 400.0 + 100.0);
         synth.time = 0.0;
-        
         synth.isPlaying = true;
 
         var numOscs = 3;
@@ -76,11 +76,12 @@ function Synth (audioCtx, windowSize, waveformType, freq)
           gainNode.connect(synth.filter);
 
           var t = audioCtx.currentTime;
+          synth.lastTriggerTime = t;
           var g = gainNode.gain;
 
           osc.start();
           g.cancelScheduledValues(t);
-          //exponentialRampToValueAtTime doesn't like 0s. It won't work if the previous value is <= 0, or if the target value is <= 0. 
+          //exponentialRampToValueAtTime doesn't like 0s. It won't work if the previous value is <= 0, or if the target value is <= 0.
           //Thus, we set the value to a small amount before, and fade the env to a small amount during release.
           var silence = 0.0000001;
           g.setValueAtTime(silence, t);
@@ -108,6 +109,19 @@ function Synth (audioCtx, windowSize, waveformType, freq)
         synth.isPlaying = false;
       }
 
+      synth.getTotalEnvTime = function()
+      {
+        return synth.attackTime + synth.decayTime + synth.sustainTime + synth.releaseTime;
+      }
+      synth.getCurrentEnvTime = function()
+      {
+        this just gives linear time, which doesn't really track with the perceptual wom noise...
+        if (audioCtx.currentTime > synth.lastTriggerTime + synth.getTotalEnvTime())
+          return 0.0;
+        console.log('current: ' + audioCtx.currentTime + ' end: ' + (synth.lastTriggerTime + synth.getTotalEnvTime()));
+        return (audioCtx.currentTime - synth.lastTriggerTime) / (synth.lastTriggerTime + synth.getTotalEnvTime());
+      }
+
       synth.changeFrequency = function (amt)
       {
         var f = synth.osc.frequency;
@@ -130,7 +144,7 @@ function Synth (audioCtx, windowSize, waveformType, freq)
   // Audio callback -----------------------------------------------------------
   function initialiseAudioProcessingCallback (synth)
   {
-    synth.audioProcessingNode.onaudioprocess = function(audioProcessingEvent) 
+    synth.audioProcessingNode.onaudioprocess = function(audioProcessingEvent)
     {
       synth.analyser.getFloatTimeDomainData(synth.timeDomainF);
       synth.analyser.getByteFrequencyData(synth.freqDomain);
@@ -140,13 +154,13 @@ function Synth (audioCtx, windowSize, waveformType, freq)
       var inputBuffer = audioProcessingEvent.inputBuffer;
       var outputBuffer = audioProcessingEvent.outputBuffer;
 
-      for (var channel = 0; channel < outputBuffer.numberOfChannels; channel++) 
+      for (var channel = 0; channel < outputBuffer.numberOfChannels; channel++)
       {
         var inputData = inputBuffer.getChannelData(channel);
         var outputData = outputBuffer.getChannelData(channel);
-        for (var sample = 0; sample < inputBuffer.length; sample++) 
+        for (var sample = 0; sample < inputBuffer.length; sample++)
         {
-          outputData[sample] = inputData[sample];       
+          outputData[sample] = inputData[sample];
         }
       }
     }
@@ -161,7 +175,7 @@ function Synth (audioCtx, windowSize, waveformType, freq)
     var magnitudeSum = 0.0;
     var weightedMagnitudeSum = 0.0;
     var centreFrequency = 0.0;
-    for(var i = 0; i < synth.numBins; i++) 
+    for(var i = 0; i < synth.numBins; i++)
     {
       //centreFrequency = i * binFrequencyRange + binFrequencyRangeHalfStep;
       var magnitude = (synth.freqDomain[i]);// - analyser.minDecibels) * decibelRange;

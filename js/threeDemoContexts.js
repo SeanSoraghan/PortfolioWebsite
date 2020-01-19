@@ -17,7 +17,7 @@ function mouseCursorStrummer(plucker)
 function wavesContext()
 {
     console.log('new waves context');
-    this.uniforms = 
+    this.uniforms =
     {
         time: {type: 'f', value: 0.0},
         resolution: {type: 'v2', value: new THREE.Vector2 (0.0, 0.0)},
@@ -26,6 +26,27 @@ function wavesContext()
         rms: {type: 'f', value: 0.0},
         pitch: {type: 'f', value: 0.0},
         detune: {type: 'f', value: 0.0}
+    };
+
+    this.updateUniforms = function()
+    {
+        if (this.updateSynthParams)
+            this.updateSynthParams();
+        this.uniforms.time.value += 0.1;
+    }
+}
+
+function sphereContext()
+{
+    console.log('new waves context');
+    this.uniforms =
+    {
+        time: {type: 'f', value: 0.0},
+        resolution: {type: 'v2', value: new THREE.Vector2 (0.0, 0.0)},
+        mouseX: {type: 'f', value: 0.0},
+        mouseY: {type: 'f', value: 0.0},
+        rms: {type: 'f', value: 0.0},
+        envTime: {type: 'f', value: 0.0}
     };
 
     this.updateUniforms = function()
@@ -85,7 +106,7 @@ function massSpringStringContext()
 
     this.strummer = new mouseCursorStrummer(this);
 
-    this.uniforms = 
+    this.uniforms =
     {
         time: {type: 'f', value: 0.0},
         resolution: {type: 'v2', value: new THREE.Vector2 (0.0, 0.0)},

@@ -170,7 +170,7 @@
             var demoContext = null;
             var loadWavesDemo = function()
             {
-                $("#demo-blurb").text("I like using and creating fun and/or useful interactive things.");
+                $("#demo-blurb").text("I like things that combine audio, graphics and interaction design.");
                 demoContext = new wavesContext();
                 threeDemo = new ThreeJSDemo ("three-demo-container", "three-demo-canvas", 'shaders/waves/frag.js', 'shaders/waves/vert.js', planeShadersLoadedCallback, demoContext);
                 var maxFreq = 1000.0;
@@ -204,8 +204,35 @@
             }
             var loadSphereDemo = function()
             {
-                $('#demo-blurb').text("I like things that combine audio, graphics and interaction design.");
-                threeDemo = new ThreeJSDemo ("three-demo-container", "three-demo-canvas", 'shaders/sphere-vertex-extrusion/frag.js', 'shaders/sphere-vertex-extrusion/vert.js', sphereShadersLoadedCallback);
+                $('#demo-blurb').text("I like using and creating fun and/or useful interactive things.");
+                demoContext = new sphereContext();
+                threeDemo = new ThreeJSDemo ("three-demo-container", "three-demo-canvas", 'shaders/sphere-vertex-extrusion/frag.js', 'shaders/sphere-vertex-extrusion/vert.js', sphereShadersLoadedCallback, demoContext);
+                demoContext.updateSynthParams = function()
+                {
+                    if (wavesSynth)
+                    {
+                        demoContext.uniforms.rms.value = wavesSynth.rms;
+                        demoContext.uniforms.envTime.value = wavesSynth.getCurrentEnvTime();
+                        // demoContext.uniforms.pitch.value = (wavesSynth.centreFrequency - minFreq) / (maxFreq - minFreq);
+                        // harmonicsMultiplier goes from 0. - 0.5.
+                        // demoContext.uniforms.detune.value = wavesSynth.harmonicsMultiplier + 0.5;
+                    }
+                }
+                threeDemo.customUniformsContext = demoContext;
+                function wavesMouseHandler()
+                {
+                    this.mouseDown = function(normedMouseEvent)
+                    {
+                        if (wavesSynth)
+                        {
+                            var harmonicsMultiplier = 0.0;
+                            wavesSynth.harmonicsMultiplier = harmonicsMultiplier;
+                            wavesSynth.centreFrequency = 200.0;
+                            wavesSynth.trigger(0.6);
+                        }
+                    }
+                }
+                threeDemo.mouseHandler = new wavesMouseHandler();
             }
             var loadSpringDemo = function()
             {
@@ -213,7 +240,7 @@
                 demoContext = new massSpringStringContext();
                 threeDemo = new ThreeJSDemo ("three-demo-container", "three-demo-canvas", 'shaders/circles/frag.js', 'shaders/circles/vert.js', planeShadersLoadedCallback, demoContext);
             }
-            var demoLoadFunctions = [loadWavesDemo, loadSphereDemo, loadSpringDemo];
+            var demoLoadFunctions = [loadSphereDemo, loadWavesDemo, loadSpringDemo];
 
             var fn_load_content = function(i_section_index)
             {
