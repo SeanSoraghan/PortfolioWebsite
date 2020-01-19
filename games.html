@@ -15,7 +15,12 @@
 
   <script src="js/check_screen_width.js"></script>
   <body onresize="screen_resized()" scroll="no" style="overflow: hidden">
-
+    <script>
+        window.addEventListener('load', function()
+        {
+            link_horizontal_buttons(); // nav_dynamic.js
+        }, false);
+    </script>
     <!-- ================================================================================================= -->
     <!-- Navigation -->
     <!-- ================================================================================================= -->
@@ -32,28 +37,14 @@
         var game_instance = null;
     </script>
 
-    <div id="bottombar" class="stick-to-bottom">
-        <div id="nav-buttons" class="grid-x fill-inner-height small-margin-collapse align-center nav-bar">
-            <div id="nav-b-left" class="cell auto medium-1 fill-inner-height centre-content start-hidden">
-                <img src="images/NavLeftPadded.png" class="nav-button-icon">
-            </div>
-            <div class="cell auto medium-1 fill-inner-height centre-content">
-                <img id="nav-b-0" src="images/CircleButtonWhiteCentrePadded.png" class="button-icon">
-            </div>
-            <div class="cell auto medium-1 fill-inner-height centre-content">
-                <img id="nav-b-1" src="images/CircleButtonBlockPadded.png" class="button-icon">
-            </div>
-            <div class="cell auto medium-1 fill-inner-height centre-content">
-                <img id="nav-b-2" src="images/CircleButtonBlockPadded.png" class="button-icon">
-            </div>
-            <div class="cell auto medium-1 fill-inner-height centre-content">
-                <img id="nav-b-3" src="images/CircleButtonBlockPadded.png" class="button-icon">
-            </div>
-            <div id="nav-b-right" class="cell auto medium-1 fill-inner-height centre-content">
-                <img src="images/NavRightPadded.png" class="nav-button-icon">
-            </div>
-        </div>
-    </div>
+    <div id="horizontal_nav"></div>
+    <script>
+        var nav_left = null;
+        var nav_right = null;
+        var i_num_sections = 4;
+        var nav_horizontal_buttons = [];
+        $('#horizontal_nav').load('html-blocks/horizontal-navigation-4.html');
+    </script>
 
     <!-- ================================================================================================= -->
     <!-- Games Page Content -->
@@ -146,10 +137,8 @@
                 });
             }
         }
-
-        var i_num_sections = 4;
     </script>
-    <script src="js/nav.js"></script>
+    <script src="js/nav_dynamic.js"></script>
 
     <script src="js/vendor/jquery.js"></script>
     <script src="js/vendor/what-input.js"></script>

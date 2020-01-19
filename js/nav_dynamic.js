@@ -1,11 +1,14 @@
 // This script assumes the following global variables:
-// function fn_load_content
+// jquery element nav_left
+// jquery element nav_right
 // int i_num_sections
+// jquery elements in array nav_horizontal_buttons
+// function fn_load_content
 
+//turn the bulk of this into a function, and call it when everything has loaded ...
 var i_current_section = 0;
 var str_btn_icon_selected = "images/UI/LightOnDark/CircleButtonFilled.png";
 var str_btn_icon_unselected = "images/UI/LightOnDark/CircleButton.png";
-var str_nav_id_stem = '#nav-b-'
 
 function set_visible(element, b_visible)
 {
@@ -18,11 +21,11 @@ function set_current_section(i_section)
 {
     if (i_current_section != i_section)
     {
-        $(str_nav_id_stem + i_current_section).attr("src", str_btn_icon_unselected);
+        nav_horizontal_buttons[i_current_section].attr("src", str_btn_icon_unselected);
         i_current_section = i_section;
-        set_visible($("#nav-b-left"), i_current_section != 0);
-        set_visible($("#nav-b-right"), i_current_section != i_num_sections - 1);
-        $(str_nav_id_stem + i_current_section).attr("src", str_btn_icon_selected);
+        set_visible(nav_left, i_current_section != 0);
+        set_visible(nav_right, i_current_section != i_num_sections - 1);
+        nav_horizontal_buttons[i_current_section].attr("src", str_btn_icon_selected);
     }
 }
 var i_anim_duration = 400;
@@ -53,14 +56,18 @@ function load_section(i_section)
         set_current_section(i_section);
     }
 }
-$( "#nav-b-left" ).click(function() {
-    load_section(i_current_section - 1);
-});
-$( "#nav-b-right" ).click(function() {
-    load_section(i_current_section + 1);
-});
 
-for (let s = 0; s < i_num_sections; ++s)
+function link_horizontal_buttons()
 {
-    $(str_nav_id_stem + s).click( function() { load_section(s); } );
+    nav_left.click(function() {
+        load_section(i_current_section - 1);
+    });
+    nav_right.click(function() {
+        load_section(i_current_section + 1);
+    });
+
+    for (let s = 0; s < i_num_sections; ++s)
+    {
+        nav_horizontal_buttons[s].click( function() { load_section(s); } );
+    }
 }

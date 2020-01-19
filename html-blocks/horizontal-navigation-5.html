@@ -1,0 +1,41 @@
+<div id="horizontal-nav-bar" class="stick-to-bottom">
+    <div id="nav-buttons" class="grid-x fill-inner-height small-margin-collapse align-center nav-bar">
+        <div id="nav-b-left" class="cell auto medium-1 fill-inner-height centre-content start-hidden">
+            <img src="images/UI/LightOnDark/NavLeft.png" class="nav-button-icon">
+        </div>
+        <div class="cell auto medium-1 fill-inner-height centre-content">
+            <img id="nav-b-0" src="images/UI/LightOnDark/CircleButtonFilled.png" class="button-icon">
+        </div>
+        <div class="cell auto medium-1 fill-inner-height centre-content">
+            <img id="nav-b-1" src="images/UI/LightOnDark/CircleButton.png" class="button-icon">
+        </div>
+        <div class="cell auto medium-1 fill-inner-height centre-content">
+            <img id="nav-b-2" src="images/UI/LightOnDark/CircleButton.png" class="button-icon">
+        </div>
+        <div class="cell auto medium-1 fill-inner-height centre-content">
+            <img id="nav-b-3" src="images/UI/LightOnDark/CircleButton.png" class="button-icon">
+        </div>
+        <div class="cell auto medium-1 fill-inner-height centre-content">
+            <img id="nav-b-4" src="images/UI/LightOnDark/CircleButton.png" class="button-icon">
+        </div>
+        <div id="nav-b-right" class="cell auto medium-1 fill-inner-height centre-content">
+            <img src="images/UI/LightOnDark/NavRight.png" class="nav-button-icon">
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+    nav_left = $('#nav-b-left');
+    nav_right = $('#nav-b-right');
+    var str_nav_id_stem = '#nav-b-'
+    for (let i = 0; i < i_num_sections; ++i)
+    {
+        nav_horizontal_buttons.push($(str_nav_id_stem + i));
+    }
+    $('#horizontal-nav-bar').hide(1, function(){console.log('hidden')});
+    function expand_horizontal_navigation()
+    {
+        expand_div('#horizontal-nav-bar', function(){console.log('expanded');});
+    }
+</script>

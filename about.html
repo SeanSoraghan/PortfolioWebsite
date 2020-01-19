@@ -30,23 +30,24 @@
     <script src="shaders/loader/ShaderLoader.min.js"></script>
 
     <script src="js/check_screen_width.js"></script>
-    <!--body scroll="no" style="overflow: hidden"-->
-    <body onresize="screen_resized()" scroll="no" style="overflow: hidden"><!-- onmousedown="initAudioContext(event)"> -->
+    <body onresize="screen_resized()" scroll="no" style="overflow: hidden">
+        <!-- ================================================================================================= -->
+        <!-- Web Audio Initialisation -->
+        <!-- ================================================================================================= -->
         <!-- https://www.html5rocks.com/en/tutorials/webaudio/intro/ -->
         <script>
-            /*window.addEventListener('resize', function()
-            {
-                window.scroll(0, 200);// here should scroll to the currently viewed section (need to store current section, and change it when section nav buttons are pressed.)
-            })*/
             var context = null;
             var contextPaused = true;
             var wavesSynth = null;
+
+            var hnb = null;
+
             window.addEventListener('load', init, false);
 
             function init()
             {
-                //$( "#section1" ).hide( );
-                //document.getElementById('section1').scrollIntoView();
+                expand_horizontal_navigation(); // horizontal-navigation-x.html
+                link_horizontal_buttons(); // nav_dynamic.js
                 try {
                     // Fix up for prefixing
                     window.AudioContext = window.AudioContext||window.webkitAudioContext;
@@ -93,31 +94,14 @@
             update_nav_menu();
         </script>
 
-        <div id="bottombar" class="stick-to-bottom">
-            <div id="nav-buttons" class="grid-x fill-inner-height small-margin-collapse align-center nav-bar">
-                <div id="nav-b-left" class="cell auto medium-1 fill-inner-height centre-content start-hidden">
-                    <img src="images/NavLeftPadded.png" class="nav-button-icon">
-                </div>
-                <div class="cell auto medium-1 fill-inner-height centre-content">
-                    <img id="nav-b-0" src="images/CircleButtonWhiteCentrePadded.png" class="button-icon">
-                </div>
-                <div class="cell auto medium-1 fill-inner-height centre-content">
-                    <img id="nav-b-1" src="images/CircleButtonBlockPadded.png" class="button-icon">
-                </div>
-                <div class="cell auto medium-1 fill-inner-height centre-content">
-                    <img id="nav-b-2" src="images/CircleButtonBlockPadded.png" class="button-icon">
-                </div>
-                <div class="cell auto medium-1 fill-inner-height centre-content">
-                    <img id="nav-b-3" src="images/CircleButtonBlockPadded.png" class="button-icon">
-                </div>
-                <div class="cell auto medium-1 fill-inner-height centre-content">
-                    <img id="nav-b-4" src="images/CircleButtonBlockPadded.png" class="button-icon">
-                </div>
-                <div id="nav-b-right" class="cell auto medium-1 fill-inner-height centre-content">
-                    <img src="images/NavRightPadded.png" class="nav-button-icon">
-                </div>
-            </div>
-        </div>
+        <div id="horizontal_nav" class=""></div>
+        <script>
+            var nav_left = null;
+            var nav_right = null;
+            var i_num_sections = 5;
+            var nav_horizontal_buttons = [];
+            $('#horizontal_nav').load('html-blocks/horizontal-navigation-5.html');
+        </script>
 
         <!-- ================================================================================================= -->
         <!-- About Page Content -->
@@ -161,7 +145,6 @@
             </div>
             <div id="outro" class="about-outro-img img-background fill-inner-height full-width">
                 <div class="grid-y fill-inner-height">
-                    <!-- <div class="cell small-9 rocker-background"></div> -->
                     <div class="cell small-10"></div>
                     <div id="outro-text" class="cell small-1">
                         <div class="grid-x align-center">
@@ -256,10 +239,8 @@
                     expand_div("#outro");
                 }
             }
-
-            var i_num_sections = 5;
         </script>
-        <script src="js/nav.js"></script>
+        <script src="js/nav_dynamic.js"></script>
 
         <script src="js/vendor/what-input.js"></script>
         <script src="js/vendor/foundation.js"></script>
