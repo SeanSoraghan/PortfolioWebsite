@@ -1,8 +1,21 @@
+var silence = 0.0001;
+
+const EnvStates =
+{
+    ATTACK: 'attack',
+    SUSTAIN: 'sustain',
+    RELEASE: 'release'
+}
+
+const EnvTypes =
+{
+    SUSTAIN: 'sustain',
+    LOOPING: 'looping',
+    ONE_SHOT: 'one_shot'
+}
 
 function Synth(audioCtx, windowSize, waveformType, freq)
 {
-    var silence = 0.0001;
-
     initialiseMembers(this, windowSize, waveformType);
     initialiseAudioProcessingCallback(this);
 
@@ -37,7 +50,7 @@ function Synth(audioCtx, windowSize, waveformType, freq)
         synth.oscs = [null, null, null];
         synth.gainNodes = [null, null, null];
         synth.oscGains = [1.0, 1.0, 1.0];
-
+        synth.velocity = 0.0;
         // Features--------------------------------------------------------;
         synth.centroid = 0.0;
         synth.rms = 0.0;
@@ -55,53 +68,56 @@ function Synth(audioCtx, windowSize, waveformType, freq)
 
         synth.trigger = function (velocity)
         {
-            synth.releaseTime = velocity * 2.6 + 0.4;
-            synth.shouldRelease = false;
-            synth.isPlaying = true;
-
-            synth.numOscs = 3;
-            if (synth.harmonicsMultiplier === 0.0)
-                synth.numOscs = 1;
-            for (var oscIndex = 0; oscIndex < synth.numOscs; oscIndex++)
+            if (velocity > 0)
             {
-                var t = audioCtx.currentTime;
+                synth.velocity = velocity;
+                synth.releaseTime = velocity * 2.6 + 0.4;
+                synth.shouldRelease = false;
+                synth.isPlaying = true;
+                synth.numOscs = 3;
+                if (synth.harmonicsMultiplier === 0.0)
+                    synth.numOscs = 1;
+                for (var oscIndex = 0; oscIndex < synth.numOscs; oscIndex++)
+                {
+                    var t = audioCtx.currentTime;
 
-                if (synth.oscs[oscIndex] != null)
-                    synth.oscs[oscIndex].stop(t);
-                if (synth.gainNodes[oscIndex] != null)
-                    synth.gainNodes[oscIndex].gain.exponentialRampToValueAtTime(silence, t);
-                synth.oscs[oscIndex] = audioCtx.createOscillator();
-                synth.gainNodes[oscIndex] = audioCtx.createGain();
+                    if (synth.oscs[oscIndex] != null)
+                        synth.oscs[oscIndex].stop(t);
+                    if (synth.gainNodes[oscIndex] != null)
+                        synth.gainNodes[oscIndex].gain.exponentialRampToValueAtTime(silence, t);
+                    synth.oscs[oscIndex] = audioCtx.createOscillator();
+                    synth.gainNodes[oscIndex] = audioCtx.createGain();
 
-                var osc = synth.oscs[oscIndex];
-                var gainNode = synth.gainNodes[oscIndex];
+                    var osc = synth.oscs[oscIndex];
+                    var gainNode = synth.gainNodes[oscIndex];
 
-                if (synth.waveform === 0)
-                    osc.type = 'sine';
-                else if (synth.waveform === 1)
-                    osc.type = 'square';
-                else if (synth.waveform === 2)
-                    osc.type = 'sawtooth';
+                    if (synth.waveform === 0)
+                        osc.type = 'sine';
+                    else if (synth.waveform === 1)
+                        osc.type = 'square';
+                    else if (synth.waveform === 2)
+                        osc.type = 'sawtooth';
 
-                osc.frequency.value = synth.centreFrequency * (1.0 + oscIndex * synth.harmonicsMultiplier);
-                osc.connect(gainNode);
-                gainNode.connect(synth.filter);
+                    osc.frequency.value = synth.centreFrequency * (1.0 + oscIndex * synth.harmonicsMultiplier);
+                    osc.connect(gainNode);
+                    gainNode.connect(synth.filter);
 
 
-                synth.lastTriggerTime = t;
-                var g = gainNode.gain;
+                    synth.lastTriggerTime = t;
+                    var g = gainNode.gain;
 
-                osc.start();
-                g.cancelScheduledValues(t);
-                //exponentialRampToValueAtTime doesn't like 0s. It won't work if the previous value is <= 0, or if the target value is <= 0.
-                //Thus, we set the value to a small amount before, and fade the env to a small amount during release.
-                g.setValueAtTime(silence, t);
-                synth.oscGains[oscIndex] = 1.0;
-                if (oscIndex > 0)
-                    synth.oscGains[oscIndex] = (1.0 - (oscIndex / synth.numOscs)) * 0.5;
-                g.exponentialRampToValueAtTime(velocity * synth.oscGains[oscIndex], t + synth.attackTime);
-                t = t + synth.attackTime;
-                g.exponentialRampToValueAtTime((velocity * synth.sustainProportion) * synth.oscGains[oscIndex], t + synth.decayTime);
+                    osc.start();
+                    g.cancelScheduledValues(t);
+                    //exponentialRampToValueAtTime doesn't like 0s. It won't work if the previous value is <= 0, or if the target value is <= 0.
+                    //Thus, we set the value to a small amount before, and fade the env to a small amount during release.
+                    g.setValueAtTime(silence, t);
+                    synth.oscGains[oscIndex] = 1.0;
+                    if (oscIndex > 0)
+                        synth.oscGains[oscIndex] = (1.0 - (oscIndex / synth.numOscs)) * 0.5;
+                    g.exponentialRampToValueAtTime(velocity * synth.oscGains[oscIndex], t + synth.attackTime);
+                    t = t + synth.attackTime;
+                    g.exponentialRampToValueAtTime((velocity * synth.sustainProportion) * synth.oscGains[oscIndex], t + synth.decayTime);
+                }
             }
         }
 
@@ -173,8 +189,19 @@ function Synth(audioCtx, windowSize, waveformType, freq)
     {
         synth.audioProcessingNode.onaudioprocess = function (audioProcessingEvent)
         {
-            if (synth.shouldRelease && synth.releaseReached())
-                synth.triggerReleasePortion();
+            if (synth.releaseReached())
+            {
+                console.log('release reached: ' + synth.shouldRelease);
+                if (synth.shouldRelease)
+                {
+                    synth.triggerReleasePortion();
+                }
+                else
+                {
+                    synth.trigger(synth.velocity)
+                }
+            }
+
 
             synth.analyser.getFloatTimeDomainData(synth.timeDomainF);
             synth.analyser.getByteFrequencyData(synth.freqDomain);

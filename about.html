@@ -63,8 +63,6 @@
                     context.resume().then(() =>
                     {
                         demoSynth = new Synth(context, 512, 0, 300);
-                        demoSynth.attackTime = 0.9;
-                        demoSynth.filter.frequency.value = 500.0;
                         console.log('Playback resumed successfully');
                         contextPaused = false;
                     });
@@ -173,6 +171,11 @@
                 threeDemo = new ThreeJSDemo ("three-demo-container", "three-demo-canvas", 'shaders/waves/frag.js', 'shaders/waves/vert.js', planeShadersLoadedCallback, demoContext);
                 var maxFreq = 1000.0;
                 var minFreq = 200.0;
+                if (demoSynth)
+                {
+                    demoSynth.attackTime = 0.9;
+                    demoSynth.filter.frequency.value = 500.0;
+                }
                 demoContext.updateSynthParams = function()
                 {
                     if (demoSynth)
@@ -194,7 +197,7 @@
                             var harmonicsMultiplier = (1.0 - normedMouseEvent.y) * 0.5;
                             demoSynth.harmonicsMultiplier = harmonicsMultiplier;
                             demoSynth.centreFrequency = pitch * (maxFreq - minFreq) + minFreq;
-                            demoSynth.trigger(0.6);
+                            demoSynth.trigger(0.3);
                         }
                     }
                     this.mouseUp = function(normedMouseEvent)
@@ -211,6 +214,11 @@
                 threeDemo = new ThreeJSDemo ("three-demo-container", "three-demo-canvas", 'shaders/sphere-vertex-extrusion/frag.js', 'shaders/sphere-vertex-extrusion/vert.js', sphereShadersLoadedCallback, demoContext);
                 demoContext.updateSynthParams = function()
                 {
+                    if (demoSynth)
+                    {
+                        demoSynth.attackTime = 0.1;
+                        demoSynth.filter.frequency.value = 800.0;
+                    }
                     if (demoSynth)
                     {
                         demoContext.uniforms.rms.value = demoSynth.rms;
@@ -230,7 +238,7 @@
                             var harmonicsMultiplier = 0.5;
                             demoSynth.harmonicsMultiplier = harmonicsMultiplier;
                             demoSynth.centreFrequency = 200.0;
-                            demoSynth.trigger(0.6);
+                            demoSynth.trigger(0.2);
                         }
                     }
                     this.mouseUp = function(normedMouseEvent)
