@@ -38,9 +38,7 @@
         <script>
             var context = null;
             var contextPaused = true;
-            var wavesSynth = null;
-
-            var hnb = null;
+            var demoSynth = null;
 
             window.addEventListener('load', init, false);
 
@@ -64,9 +62,9 @@
                 {
                     context.resume().then(() =>
                     {
-                        wavesSynth = new Synth(context, 512, 0, 300);
-                        wavesSynth.attackTime = 0.9;
-                        wavesSynth.filter.frequency.value = 500.0;
+                        demoSynth = new Synth(context, 512, 0, 300);
+                        demoSynth.attackTime = 0.9;
+                        demoSynth.filter.frequency.value = 500.0;
                         console.log('Playback resumed successfully');
                         contextPaused = false;
                     });
@@ -177,12 +175,12 @@
                 var minFreq = 200.0;
                 demoContext.updateSynthParams = function()
                 {
-                    if (wavesSynth)
+                    if (demoSynth)
                     {
-                        demoContext.uniforms.rms.value = wavesSynth.rms * 5.0;
-                        demoContext.uniforms.pitch.value = (wavesSynth.centreFrequency - minFreq) / (maxFreq - minFreq);
+                        demoContext.uniforms.rms.value = demoSynth.rms * 5.0;
+                        demoContext.uniforms.pitch.value = (demoSynth.centreFrequency - minFreq) / (maxFreq - minFreq);
                         // harmonicsMultiplier goes from 0. - 0.5.
-                        demoContext.uniforms.detune.value = wavesSynth.harmonicsMultiplier + 0.5;
+                        demoContext.uniforms.detune.value = demoSynth.harmonicsMultiplier + 0.5;
                     }
                 }
                 threeDemo.customUniformsContext = demoContext;
@@ -190,14 +188,18 @@
                 {
                     this.mouseDown = function(normedMouseEvent)
                     {
-                        if (wavesSynth)
+                        if (demoSynth)
                         {
                             var pitch = normedMouseEvent.x;
                             var harmonicsMultiplier = (1.0 - normedMouseEvent.y) * 0.5;
-                            wavesSynth.harmonicsMultiplier = harmonicsMultiplier;
-                            wavesSynth.centreFrequency = pitch * (maxFreq - minFreq) + minFreq;
-                            wavesSynth.trigger(0.1);
+                            demoSynth.harmonicsMultiplier = harmonicsMultiplier;
+                            demoSynth.centreFrequency = pitch * (maxFreq - minFreq) + minFreq;
+                            demoSynth.trigger(0.6);
                         }
+                    }
+                    this.mouseUp = function(normedMouseEvent)
+                    {
+                        demoSynth.release();
                     }
                 }
                 threeDemo.mouseHandler = new wavesMouseHandler();
@@ -209,30 +211,34 @@
                 threeDemo = new ThreeJSDemo ("three-demo-container", "three-demo-canvas", 'shaders/sphere-vertex-extrusion/frag.js', 'shaders/sphere-vertex-extrusion/vert.js', sphereShadersLoadedCallback, demoContext);
                 demoContext.updateSynthParams = function()
                 {
-                    if (wavesSynth)
+                    if (demoSynth)
                     {
-                        demoContext.uniforms.rms.value = wavesSynth.rms;
-                        demoContext.uniforms.envTime.value = wavesSynth.getCurrentEnvTime();
-                        // demoContext.uniforms.pitch.value = (wavesSynth.centreFrequency - minFreq) / (maxFreq - minFreq);
+                        demoContext.uniforms.rms.value = demoSynth.rms;
+                        demoContext.uniforms.envTime.value = demoSynth.getCurrentEnvTime();
+                        // demoContext.uniforms.pitch.value = (demoSynth.centreFrequency - minFreq) / (maxFreq - minFreq);
                         // harmonicsMultiplier goes from 0. - 0.5.
-                        // demoContext.uniforms.detune.value = wavesSynth.harmonicsMultiplier + 0.5;
+                        // demoContext.uniforms.detune.value = demoSynth.harmonicsMultiplier + 0.5;
                     }
                 }
                 threeDemo.customUniformsContext = demoContext;
-                function wavesMouseHandler()
+                function sphereMouseHandler()
                 {
                     this.mouseDown = function(normedMouseEvent)
                     {
-                        if (wavesSynth)
+                        if (demoSynth)
                         {
                             var harmonicsMultiplier = 0.0;
-                            wavesSynth.harmonicsMultiplier = harmonicsMultiplier;
-                            wavesSynth.centreFrequency = 200.0;
-                            wavesSynth.trigger(0.6);
+                            demoSynth.harmonicsMultiplier = harmonicsMultiplier;
+                            demoSynth.centreFrequency = 200.0;
+                            demoSynth.trigger(0.6);
                         }
                     }
+                    this.mouseUp = function(normedMouseEvent)
+                    {
+                        demoSynth.release();
+                    }
                 }
-                threeDemo.mouseHandler = new wavesMouseHandler();
+                threeDemo.mouseHandler = new sphereMouseHandler();
             }
             var loadSpringDemo = function()
             {

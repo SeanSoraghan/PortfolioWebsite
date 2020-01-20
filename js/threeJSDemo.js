@@ -1,4 +1,4 @@
-function ShaderLoader(vertex_url, fragment_url, onLoad, onProgress, onError) 
+function ShaderLoader(vertex_url, fragment_url, onLoad, onProgress, onError)
 {
     var vertex_loader = new THREE.FileLoader(THREE.DefaultLoadingManager);
     vertex_loader.setResponseType('text');
@@ -28,7 +28,7 @@ function ThreeJSDemo (containerID, canvasID, fragURL, vertURL, shadersLoadedCall
             threeDemo.aspect = contW / contH;
         }
     }
-    
+
     initialiseMembers (this, shadersLoadedCallback);
     initialiseScene (this);
     initShaders (this, vertURL, fragURL);
@@ -39,13 +39,13 @@ function ThreeJSDemo (containerID, canvasID, fragURL, vertURL, shadersLoadedCall
         if(t.swap)
         {
             // Remove input handling
-            if (document.attachEvent) 
+            if (document.attachEvent)
             {
                 document.detachEvent('onmousemove', mouseMoved);
                 document.detachEvent('onmousedown', mouseDown);
             }
             else
-            { 
+            {
                 document.removeEventListener('mousemove', mouseMoved);
                 document.removeEventListener('mousedown', mouseDown);
             }
@@ -88,7 +88,7 @@ function ThreeJSDemo (containerID, canvasID, fragURL, vertURL, shadersLoadedCall
         threeDemo.camera   = {};
         threeDemo.renderer = {};
         threeDemo.uniforms = {};
-        threeDemo.raycaster = new THREE.Raycaster(); 
+        threeDemo.raycaster = new THREE.Raycaster();
         threeDemo.width = 0;
         threeDemo.height = 0;
         threeDemo.aspect = 0;
@@ -96,7 +96,7 @@ function ThreeJSDemo (containerID, canvasID, fragURL, vertURL, shadersLoadedCall
         threeDemo.mouseY = 0;
     }
 
-    function getMousePos(canvas, containerDims, mousePos) 
+    function getMousePos(canvas, containerDims, mousePos)
     {
         scaleX = canvas.width / containerDims.width;    // relationship bitmap vs. element for X
         scaleY = canvas.height / containerDims.height;  // relationship bitmap vs. element for Y
@@ -122,7 +122,7 @@ function ThreeJSDemo (containerID, canvasID, fragURL, vertURL, shadersLoadedCall
 
         //raycaster.setFromCamera( mouse, threeDemo.camera );
         //var intersects = raycaster.intersectObjects( objects, recursiveFlag );
-        
+
         // Old way, with calculation of distance using z.
 
         //threeDemo.projector.unprojectVector (mouseInWorld, threeDemo.camera);
@@ -164,12 +164,24 @@ function ThreeJSDemo (containerID, canvasID, fragURL, vertURL, shadersLoadedCall
 
     function mouseDown(mouseEvent)
     {
-        if(t.mouseHandler)
+        if (t.mouseHandler)
         {
             var mappedMouse = t.getNormedMousePos(mouseEvent);
             if (mappedMouse.x <= 1.0 && mappedMouse.y <= 1.0 && mappedMouse.x >= 0.0 && mappedMouse.y >= 0.0)
             {
                 t.mouseHandler.mouseDown(mappedMouse);
+            }
+        }
+    }
+
+    function mouseUp(mouseEvent)
+    {
+        if (t.mouseHandler)
+        {
+            var mappedMouse = t.getNormedMousePos(mouseEvent);
+            if (mappedMouse.x <= 1.0 && mappedMouse.y <= 1.0 && mappedMouse.x >= 0.0 && mappedMouse.y >= 0.0)
+            {
+                t.mouseHandler.mouseUp(mappedMouse);
             }
         }
     }
@@ -183,21 +195,23 @@ function ThreeJSDemo (containerID, canvasID, fragURL, vertURL, shadersLoadedCall
         updateDemoDimensions(threeDemo, true);
         threeDemo.renderer.setSize (threeDemo.width, threeDemo.height);
         threeDemo.renderer.setClearColor( 0x00, 1);
-        
+
         threeDemo.camera = new THREE.PerspectiveCamera (45, threeDemo.aspect, 0.1, 20000);
         threeDemo.camera.position.set (0,0,300);
-        threeDemo.scene.add (threeDemo.camera); 
+        threeDemo.scene.add (threeDemo.camera);
 
         // Input handling
-        if (document.attachEvent) 
+        if (document.attachEvent)
         {
             document.attachEvent('onmousemove', mouseMoved);
             document.attachEvent('onmousedown', mouseDown);
+            document.attachEvent('onmouseup', mouseUp);
         }
         else
-        { 
+        {
             document.addEventListener('mousemove', mouseMoved);
             document.addEventListener('mousedown', mouseDown);
+            document.addEventListener('mouseup', mouseUp);
         }
     }
 
@@ -221,16 +235,16 @@ function ThreeJSDemo (containerID, canvasID, fragURL, vertURL, shadersLoadedCall
         function onProgress(){}
         function onError(){console.log("Failed to load shaders...");}
 
-        function onLoad(vert, frag) 
+        function onLoad(vert, frag)
         {
-            if (threeDemo.customUniformsContext) 
+            if (threeDemo.customUniformsContext)
                 shadersLoadedCallback(vert, frag, threeDemo, threeDemo.customUniformsContext.uniforms);
             else
                 shadersLoadedCallback(vert, frag, threeDemo);
         }
-        
+
         ShaderLoader(vertString, fragString, onLoad, onProgress, onError)
-        
+
         if (threeDemo.customUniformsContext)
         {
             threeDemo.updateUniforms = function()
