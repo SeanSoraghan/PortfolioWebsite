@@ -160,6 +160,10 @@ function ThreeJSDemo (containerID, canvasID, fragURL, vertURL, shadersLoadedCall
             t.mouseX = mappedMouse.x
             t.mouseY = mappedMouse.y
         }
+        if (t.mouseHandler != null)
+        {
+            t.mouseHandler.mouseMoved(mappedMouse);
+        }
     }
 
     function mouseDown(mouseEvent)

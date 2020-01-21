@@ -173,8 +173,8 @@
                 var minFreq = 200.0;
                 if (demoSynth)
                 {
-                    demoSynth.attackTime = 0.9;
-                    demoSynth.releaseTime = 1.2;
+                    demoSynth.attackTime = 0.2;
+                    demoSynth.releaseTime = 1.9;
                     demoSynth.filter.frequency.value = 500.0;
                     demoSynth.envType = EnvType.HOLD;
                 }
@@ -206,6 +206,10 @@
                     this.mouseUp = function(normedMouseEvent)
                     {
                         demoSynth.noteOff();
+                    }
+                    this.mouseMoved = function(normedMouseEvent)
+                    {
+                        demoSynth.setCentreFrequency(normedMouseEvent.x * (maxFreq - minFreq) + minFreq);
                     }
                 }
                 threeDemo.mouseHandler = new wavesMouseHandler();
@@ -249,6 +253,10 @@
                     this.mouseUp = function(normedMouseEvent)
                     {
                         demoSynth.noteOff();
+                    }
+                    this.mouseMoved = function(normedMouseEvent)
+                    {
+
                     }
                 }
                 threeDemo.mouseHandler = new sphereMouseHandler();

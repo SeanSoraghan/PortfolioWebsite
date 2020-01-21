@@ -66,6 +66,7 @@ function Synth(audioCtx, windowSize, waveformType, freq)
         synth.sustainTime = 0.1;
         synth.synthPitchOnRamp = 0.6;
         synth.lastTriggerTime = 0.0;
+        synth.releaseTriggerTime = 0.0;
         synth.shouldRelease = false;
         synth.shouldLoop = true;
 
@@ -148,6 +149,7 @@ function Synth(audioCtx, windowSize, waveformType, freq)
             synth.envState = EnvState.RELEASE;
 
             var now = audioCtx.currentTime;
+            synth.releaseTriggerTime = now;
             for (let oscIndex = 0; oscIndex < synth.numOscs; ++oscIndex)
             {
                 if (synth.gainNodes[oscIndex] != null)
@@ -191,7 +193,7 @@ function Synth(audioCtx, windowSize, waveformType, freq)
         }
         synth.envComplete = function()
         {
-            return audioCtx.currentTime > synth.lastTriggerTime + synth.getTotalEnvTime();
+            return audioCtx.currentTime > synth.releaseTriggerTime + synth.releaseTime;
         }
 
         synth.changeFrequency = function (amt)
