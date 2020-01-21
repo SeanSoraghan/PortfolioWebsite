@@ -51,8 +51,8 @@ function Synth(audioCtx, windowSize, waveformType, freq)
         synth.harmonicsMultiplier = 1.0;
         synth.numOscs = 3;
         synth.oscs = [];
-        synth.gainNodes = [];
-        synth.oscGains = [];
+        synth.oscGainNodes = [];
+        synth.envGainNodes = [];
         synth.velocity = 0.0;
         // Features--------------------------------------------------------;
         synth.centroid = 0.0;
@@ -73,12 +73,12 @@ function Synth(audioCtx, windowSize, waveformType, freq)
         for (var oscIndex = 0; oscIndex < synth.numOscs; oscIndex++)
         {
             synth.oscs.push(audioCtx.createOscillator());
-            synth.gainNodes.push(audioCtx.createGain());
-            synth.oscGains.push(1.0);
+            synth.oscGainNodes.push(audioCtx.createGain());
+            synth.envGainNodes.push(audioCtx.createGain());
 
             var osc = synth.oscs[oscIndex];
-            var gainNode = synth.gainNodes[oscIndex];
-
+            var oscGain = synth.oscGainNodes[oscIndex];
+            var envGain = synth.envGainNodes[oscIndex];
             if (synth.waveform === 0)
                 osc.type = 'sine';
             else if (synth.waveform === 1)
@@ -87,13 +87,63 @@ function Synth(audioCtx, windowSize, waveformType, freq)
                 osc.type = 'sawtooth';
 
             osc.frequency.value = synth.centreFrequency * (1.0 + oscIndex * synth.harmonicsMultiplier);
-            osc.connect(gainNode);
-            gainNode.connect(synth.filter);
-            gainNode.gain.setValueAtTime(0.0, audioCtx.currentTime);
+            osc.connect(oscGain);
+            oscGain.connect(envGain);
+            envGain.connect(synth.filter);
+            oscGain.gain.setValueAtTime(0.0, audioCtx.currentTime);
+            envGain.gain.setValueAtTime(1.0, audioCtx.currentTime);
             osc.start();
         }
 
-        synth.reset = function(time_now)
+        synth.setCentreFrequency = function (newFreq)
+        {
+            synth.centreFrequency = newFreq;
+            synth.setOscFreqs();
+        }
+
+        synth.setHarmonicsMultiplier = function(newH)
+        {
+            synth.harmonicsMultiplier = newH;
+            synth.setOscFreqs();
+            synth.setGains();
+        }
+
+        synth.setOscFreqs = function()
+        {
+            for (var oscIndex = 0; oscIndex < synth.numOscs; oscIndex++)
+            {
+                var osc = synth.oscs[oscIndex];
+                if (osc != null)
+                {
+                    var f = osc.frequency;
+                    var now = audioCtx.currentTime;
+                    f.cancelScheduledValues(now);
+                    f.setValueAtTime(f.value, now);
+                    f.linearRampToValueAtTime(synth.centreFrequency * (1.0 + oscIndex * synth.harmonicsMultiplier), now + 0.1);
+                }
+            }
+        }
+
+        synth.setGains = function()
+        {
+            for (var oscIndex = 0; oscIndex < synth.numOscs; oscIndex++)
+            {
+                var envGain = synth.envGainNodes[oscIndex];
+                if (envGain != null)
+                {
+                    var g = envGain.gain;
+                    var now = audioCtx.currentTime;
+                    g.cancelScheduledValues(now);
+                    g.setValueAtTime(g.value, now);
+                    if (synth.harmonicsMultiplier === 0.0)
+                        g.exponentialRampToValueAtTime(silence, now + 0.1);
+                    else
+                        g.exponentialRampToValueAtTime((1.0 - (oscIndex / synth.numOscs)) * 0.5, now + 0.1);
+                }
+            }
+        }
+
+        synth.reset = function()
         {
             synth.shouldRelease = false;
             synth.shouldLoop = true;
@@ -103,7 +153,7 @@ function Synth(audioCtx, windowSize, waveformType, freq)
         synth.trigger = function (velocity)
         {
             console.log('freq: ' + synth.centreFrequency + ' h: ' + synth.harmonicsMultiplier);
-            synth.reset(t);
+            synth.reset();
             synth.lastTriggerTime = audioCtx.currentTime;
             if (velocity > 0)
             {
@@ -111,27 +161,27 @@ function Synth(audioCtx, windowSize, waveformType, freq)
                 synth.envState = EnvState.ATTACK;
                 for (var oscIndex = 0; oscIndex < synth.numOscs; oscIndex++)
                 {
-                    var gainNode = synth.gainNodes[oscIndex];
+                    var oscGain = synth.oscGainNodes[oscIndex];
 
-                    if (gainNode != null)
+                    if (oscGain != null)
                     {
-                        var g = gainNode.gain;
+                        var g = oscGain.gain;
                         var t = audioCtx.currentTime;
                         g.cancelScheduledValues(t);
                         //exponentialRampToValueAtTime doesn't like 0s. It won't work if the previous value is <= 0, or if the target value is <= 0.
                         //Thus, we set the value to a small amount before, and fade the env to a small amount during release.
                         g.setValueAtTime(silence, t);
-                        synth.oscGains[oscIndex] = 1.0;
+                        synth.envGainNodes[oscIndex].gain.setValueAtTime(1.0, t);
                         if (oscIndex > 0)
                         {
                             if (synth.harmonicsMultiplier === 0.0)
-                                synth.oscGains[oscIndex] = 0.0;
+                                synth.envGainNodes[oscIndex].gain.setValueAtTime(0.0, t);
                             else
-                                synth.oscGains[oscIndex] = (1.0 - (oscIndex / synth.numOscs)) * 0.5;
+                                synth.envGainNodes[oscIndex].gain.setValueAtTime((1.0 - (oscIndex / synth.numOscs)) * 0.5, t);
                         }
-                        g.exponentialRampToValueAtTime(velocity * synth.oscGains[oscIndex], t + synth.attackTime);
+                        g.exponentialRampToValueAtTime(velocity, t + synth.attackTime);
                         t = t + synth.attackTime;
-                        g.exponentialRampToValueAtTime((velocity * synth.sustainProportion) * synth.oscGains[oscIndex], t + synth.decayTime);
+                        g.exponentialRampToValueAtTime((velocity * synth.sustainProportion), t + synth.decayTime);
                     }
                 }
             }
@@ -152,9 +202,9 @@ function Synth(audioCtx, windowSize, waveformType, freq)
             synth.releaseTriggerTime = now;
             for (let oscIndex = 0; oscIndex < synth.numOscs; ++oscIndex)
             {
-                if (synth.gainNodes[oscIndex] != null)
+                if (synth.oscGainNodes[oscIndex] != null)
                 {
-                    var g = synth.gainNodes[oscIndex].gain;
+                    var g = synth.oscGainNodes[oscIndex].gain;
                     // Need to explicitly set the control value first before calling exponentiaRampTo ...
                     // ( http://alemangui.github.io/blog//2015/12/26/ramp-to-value.html )
                     g.setValueAtTime(g.value, now);
@@ -168,8 +218,8 @@ function Synth(audioCtx, windowSize, waveformType, freq)
             var now = audioCtx.currentTime;
             for (let oscIndex = 0; oscIndex < synth.numOscs; ++oscIndex)
             {
-                if (synth.gainNodes[oscIndex] != null)
-                    synth.gainNodes[oscIndex].gain.setValueAtTime(0.0, now);
+                if (synth.oscGainNodes[oscIndex] != null)
+                    synth.oscGainNodes[oscIndex].gain.setValueAtTime(0.0, now);
             }
         }
         synth.getAttackDecayTime = function()
@@ -203,23 +253,6 @@ function Synth(audioCtx, windowSize, waveformType, freq)
             var now = audioCtx.currentTime;
             f.cancelScheduledValues(now);
             f.linearRampToValueAtTime(fNow + amt, now + 0.9);
-        }
-
-        synth.setCentreFrequency = function (newFreq)
-        {
-            synth.centreFrequency = newFreq;
-            for (var oscIndex = 0; oscIndex < synth.numOscs; oscIndex++)
-            {
-                var osc = synth.oscs[oscIndex];
-                if (osc != null)
-                {
-                    var f = osc.frequency;
-                    var now = audioCtx.currentTime;
-                    f.cancelScheduledValues(now);
-                    f.setValueAtTime(f.value, now);
-                    f.linearRampToValueAtTime(synth.centreFrequency * (1.0 + oscIndex * synth.harmonicsMultiplier), now + 0.1);
-                }
-            }
         }
     }
 
