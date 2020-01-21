@@ -1,15 +1,16 @@
 var silence = 0.0001;
 
-const EnvStates =
+const EnvState =
 {
     ATTACK: 'attack',
     SUSTAIN: 'sustain',
-    RELEASE: 'release'
+    RELEASE: 'release',
+    COMPLETE: 'complete'
 }
 
-const EnvTypes =
+const EnvType =
 {
-    SUSTAIN: 'sustain',
+    HOLD: 'hold',
     LOOPING: 'looping',
     ONE_SHOT: 'one_shot'
 }
@@ -43,6 +44,8 @@ function Synth(audioCtx, windowSize, waveformType, freq)
         synth.audioProcessingNode.connect(audioCtx.destination);
 
         // Params----------------------------------------------------------;
+        synth.envType = EnvType.HOLD;
+        synth.envState = EnvState.ATTACK;
         synth.waveform = waveformType;
         synth.centreFrequency = freq;
         synth.harmonicsMultiplier = 1.0;
@@ -56,7 +59,6 @@ function Synth(audioCtx, windowSize, waveformType, freq)
         synth.rms = 0.0;
 
         // Start/stop  Interaction-----------------------------------------;
-        synth.isPlaying = false;
         synth.attackTime = 0.02;
         synth.releaseTime = 1.6;
         synth.decayTime = 0.3;
@@ -65,15 +67,21 @@ function Synth(audioCtx, windowSize, waveformType, freq)
         synth.synthPitchOnRamp = 0.6;
         synth.lastTriggerTime = 0.0;
         synth.shouldRelease = false;
+        synth.shouldLoop = true;
 
+        synth.reset = function(time_now)
+        {
+            synth.shouldRelease = false;
+            synth.shouldLoop = true;
+        }
         synth.trigger = function (velocity)
         {
+            synth.reset();
             if (velocity > 0)
             {
                 synth.velocity = velocity;
                 synth.releaseTime = velocity * 2.6 + 0.4;
                 synth.shouldRelease = false;
-                synth.isPlaying = true;
                 synth.numOscs = 3;
                 if (synth.harmonicsMultiplier === 0.0)
                     synth.numOscs = 1;
@@ -106,6 +114,8 @@ function Synth(audioCtx, windowSize, waveformType, freq)
                     synth.lastTriggerTime = t;
                     var g = gainNode.gain;
 
+                    synth.envState = EnvState.ATTACK;
+
                     osc.start();
                     g.cancelScheduledValues(t);
                     //exponentialRampToValueAtTime doesn't like 0s. It won't work if the previous value is <= 0, or if the target value is <= 0.
@@ -121,12 +131,17 @@ function Synth(audioCtx, windowSize, waveformType, freq)
             }
         }
 
-        synth.release = function()
+        synth.stop = function()
         {
-            synth.shouldRelease = true;
+            if (synth.envType === EnvType.HOLD)
+                synth.shouldRelease = true;
+            else if (synth.envType === EnvType.LOOPING)
+                synth.shouldLoop = false;
         }
         synth.triggerReleasePortion = function ()
         {
+            synth.envState = EnvState.RELEASE;
+
             var now = audioCtx.currentTime;
             for (let oscIndex = 0; oscIndex < synth.numOscs; ++oscIndex)
             {
@@ -142,7 +157,6 @@ function Synth(audioCtx, windowSize, waveformType, freq)
                     synth.oscs[oscIndex].stop(now + synth.releaseTime + 0.05);
             }
             synth.shouldRelease = false;
-            synth.isPlaying = false;
         }
 
         synth.getAttackDecayTime = function()
@@ -160,9 +174,13 @@ function Synth(audioCtx, windowSize, waveformType, freq)
             //console.log('current: ' + audioCtx.currentTime + ' end: ' + (synth.lastTriggerTime + synth.getTotalEnvTime()));
             return (audioCtx.currentTime - synth.lastTriggerTime) / (synth.lastTriggerTime + synth.getTotalEnvTime());
         }
-        synth.releaseReached = function()
+        synth.sustainReached = function()
         {
-            return audioCtx.currentTime > synth.lastTriggerTime + synth.getAttackDecayTime()
+            return audioCtx.currentTime > synth.lastTriggerTime + synth.getAttackDecayTime();
+        }
+        synth.envComplete = function()
+        {
+            return audioCtx.currentTime > synth.lastTriggerTime + synth.getTotalEnvTime();
         }
 
         synth.changeFrequency = function (amt)
@@ -189,19 +207,27 @@ function Synth(audioCtx, windowSize, waveformType, freq)
     {
         synth.audioProcessingNode.onaudioprocess = function (audioProcessingEvent)
         {
-            if (synth.releaseReached())
+            if (synth.envState === EnvState.ATTACK && synth.sustainReached())
             {
-                console.log('release reached: ' + synth.shouldRelease);
-                if (synth.shouldRelease)
-                {
-                    synth.triggerReleasePortion();
-                }
-                else
-                {
-                    synth.trigger(synth.velocity)
-                }
+                synth.envState = EnvState.SUSTAIN;
+                if (synth.envType === EnvType.LOOPING || synth.envType === EnvType.ONE_SHOT)
+                    synth.shouldRelease = true;
             }
-
+            if (synth.envState === EnvState.SUSTAIN)
+            {
+                if (synth.shouldRelease)
+                    synth.triggerReleasePortion();
+            }
+            if (synth.envState === EnvState.RELEASE)
+            {
+                if (synth.envComplete())
+                    synth.envState = EnvState.COMPLETE;
+            }
+            if (synth.envState === EnvState.COMPLETE)
+            {
+                if (synth.envType === EnvType.LOOPING && synth.shouldLoop)
+                    synth.trigger(synth.velocity);
+            }
 
             synth.analyser.getFloatTimeDomainData(synth.timeDomainF);
             synth.analyser.getByteFrequencyData(synth.freqDomain);

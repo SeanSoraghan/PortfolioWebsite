@@ -180,6 +180,7 @@
                 {
                     if (demoSynth)
                     {
+                        demoSynth.envType = EnvType.HOLD;
                         demoContext.uniforms.rms.value = demoSynth.rms * 5.0;
                         demoContext.uniforms.pitch.value = (demoSynth.centreFrequency - minFreq) / (maxFreq - minFreq);
                         // harmonicsMultiplier goes from 0. - 0.5.
@@ -202,7 +203,7 @@
                     }
                     this.mouseUp = function(normedMouseEvent)
                     {
-                        demoSynth.release();
+                        demoSynth.stop();
                     }
                 }
                 threeDemo.mouseHandler = new wavesMouseHandler();
@@ -218,6 +219,7 @@
                     {
                         demoSynth.attackTime = 0.1;
                         demoSynth.filter.frequency.value = 800.0;
+                        demoSynth.envType = EnvType.LOOPING;
                     }
                     if (demoSynth)
                     {
@@ -243,7 +245,7 @@
                     }
                     this.mouseUp = function(normedMouseEvent)
                     {
-                        demoSynth.release();
+                        demoSynth.stop();
                     }
                 }
                 threeDemo.mouseHandler = new sphereMouseHandler();
