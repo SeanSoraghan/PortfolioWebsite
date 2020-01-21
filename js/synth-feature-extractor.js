@@ -60,10 +60,10 @@ function Synth(audioCtx, windowSize, waveformType, freq)
 
         // Start/stop  Interaction-----------------------------------------;
         synth.attackTime = 0.02;
-        synth.releaseTime = 1.6;
-        synth.decayTime = 0.3;
+        synth.releaseTime = 0.1;
+        synth.decayTime = 0.1;
         synth.sustainProportion = 0.8;
-        synth.sustainTime = 0.3;
+        synth.sustainTime = 0.1;
         synth.synthPitchOnRamp = 0.6;
         synth.lastTriggerTime = 0.0;
         synth.shouldRelease = false;
@@ -107,7 +107,6 @@ function Synth(audioCtx, windowSize, waveformType, freq)
             if (velocity > 0)
             {
                 synth.velocity = velocity;
-                synth.releaseTime = velocity * 2.6 + 0.4;
                 synth.envState = EnvState.ATTACK;
                 for (var oscIndex = 0; oscIndex < synth.numOscs; oscIndex++)
                 {
