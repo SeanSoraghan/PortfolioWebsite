@@ -101,6 +101,7 @@ function Synth(audioCtx, windowSize, waveformType, freq)
 
         synth.trigger = function (velocity)
         {
+            console.log('freq: ' + synth.centreFrequency + ' h: ' + synth.harmonicsMultiplier);
             synth.reset(t);
             synth.lastTriggerTime = audioCtx.currentTime;
             if (velocity > 0)
@@ -203,13 +204,21 @@ function Synth(audioCtx, windowSize, waveformType, freq)
             f.linearRampToValueAtTime(fNow + amt, now + 0.9);
         }
 
-        synth.setFrequency = function (newFreq)
+        synth.setCentreFrequency = function (newFreq)
         {
-            var f = synth.osc.frequency;
-            var fNow = f.value;
-            var now = audioCtx.currentTime;
-            f.cancelScheduledValues(now);
-            f.linearRampToValueAtTime(newFreq, now + 0.9);
+            synth.centreFrequency = newFreq;
+            for (var oscIndex = 0; oscIndex < synth.numOscs; oscIndex++)
+            {
+                var osc = synth.oscs[oscIndex];
+                if (osc != null)
+                {
+                    var f = osc.frequency;
+                    var now = audioCtx.currentTime;
+                    f.cancelScheduledValues(now);
+                    f.setValueAtTime(f.value, now);
+                    f.linearRampToValueAtTime(synth.centreFrequency * (1.0 + oscIndex * synth.harmonicsMultiplier), now + 0.1);
+                }
+            }
         }
     }
 

@@ -175,12 +175,12 @@
                 {
                     demoSynth.attackTime = 0.9;
                     demoSynth.filter.frequency.value = 500.0;
+                    demoSynth.envType = EnvType.HOLD;
                 }
                 demoContext.updateSynthParams = function()
                 {
                     if (demoSynth)
                     {
-                        demoSynth.envType = EnvType.HOLD;
                         demoContext.uniforms.rms.value = demoSynth.rms * 5.0;
                         demoContext.uniforms.pitch.value = (demoSynth.centreFrequency - minFreq) / (maxFreq - minFreq);
                         // harmonicsMultiplier goes from 0. - 0.5.
@@ -195,9 +195,10 @@
                         if (demoSynth)
                         {
                             var pitch = normedMouseEvent.x;
-                            var harmonicsMultiplier = (1.0 - normedMouseEvent.y) * 0.5;
-                            demoSynth.harmonicsMultiplier = harmonicsMultiplier;
-                            demoSynth.centreFrequency = pitch * (maxFreq - minFreq) + minFreq;
+                            var h = (1.0 - normedMouseEvent.y) * 0.5;
+                            console.log('h: ' + h + ' p: ' + pitch);
+                            demoSynth.harmonicsMultiplier = h;
+                            demoSynth.setCentreFrequency(pitch * (maxFreq - minFreq) + minFreq);
                             demoSynth.trigger(0.3);
                         }
                     }
@@ -237,9 +238,9 @@
                     {
                         if (demoSynth)
                         {
-                            var harmonicsMultiplier = 0.5;
-                            demoSynth.harmonicsMultiplier = harmonicsMultiplier;
-                            demoSynth.centreFrequency = 200.0;
+                            var h = 0.5;
+                            demoSynth.harmonicsMultiplier = h;
+                            demoSynth.setCentreFrequency(200.0);
                             demoSynth.trigger(0.2);
                         }
                     }
