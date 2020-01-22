@@ -70,30 +70,43 @@ function Synth(audioCtx, windowSize, waveformType, freq)
         synth.shouldRelease = false;
         synth.shouldLoop = true;
 
-        for (var oscIndex = 0; oscIndex < synth.numOscs; oscIndex++)
+        synth.initialiseOscs = function()
         {
-            synth.oscs.push(audioCtx.createOscillator());
-            synth.oscGainNodes.push(audioCtx.createGain());
-            synth.envGainNodes.push(audioCtx.createGain());
+            synth.oscs = [];
+            synth.oscGainNodes = [];
+            synth.envGainNodes = [];
+            for (var oscIndex = 0; oscIndex < synth.numOscs; oscIndex++)
+            {
+                synth.oscs.push(audioCtx.createOscillator());
+                synth.oscGainNodes.push(audioCtx.createGain());
+                synth.envGainNodes.push(audioCtx.createGain());
 
-            var osc = synth.oscs[oscIndex];
-            var oscGain = synth.oscGainNodes[oscIndex];
-            var envGain = synth.envGainNodes[oscIndex];
-            if (synth.waveform === 0)
-                osc.type = 'sine';
-            else if (synth.waveform === 1)
-                osc.type = 'square';
-            else if (synth.waveform === 2)
-                osc.type = 'sawtooth';
+                var osc = synth.oscs[oscIndex];
+                var oscGain = synth.oscGainNodes[oscIndex];
+                var envGain = synth.envGainNodes[oscIndex];
+                if (synth.waveform === 0)
+                    osc.type = 'sine';
+                else if (synth.waveform === 1)
+                    osc.type = 'square';
+                else if (synth.waveform === 2)
+                    osc.type = 'sawtooth';
 
-            osc.frequency.value = synth.centreFrequency * (1.0 + oscIndex * synth.harmonicsMultiplier);
-            osc.connect(oscGain);
-            oscGain.connect(envGain);
-            envGain.connect(synth.filter);
-            oscGain.gain.setValueAtTime(0.0, audioCtx.currentTime);
-            envGain.gain.setValueAtTime(1.0, audioCtx.currentTime);
-            osc.start();
+                osc.frequency.value = synth.centreFrequency * (1.0 + oscIndex * synth.harmonicsMultiplier);
+                osc.connect(oscGain);
+                oscGain.connect(envGain);
+                envGain.connect(synth.filter);
+                oscGain.gain.setValueAtTime(0.0, audioCtx.currentTime);
+                envGain.gain.setValueAtTime(1.0, audioCtx.currentTime);
+                osc.start();
+            }
         }
+
+        synth.setNumOscs = function(numOscs)
+        {
+            synth.numOscs = numOscs;
+        }
+
+        synth.initialiseOscs();
 
         synth.setCentreFrequency = function (newFreq)
         {
@@ -270,19 +283,28 @@ function Synth(audioCtx, windowSize, waveformType, freq)
             if (synth.envState === EnvState.SUSTAIN)
             {
                 if (synth.shouldRelease)
+                {
                     synth.triggerReleasePortion();
+                }
             }
             if (synth.envState === EnvState.RELEASE)
             {
                 if (synth.envComplete())
+                {
                     synth.envState = EnvState.COMPLETE;
+                }
             }
             if (synth.envState === EnvState.COMPLETE)
             {
                 if (synth.envType === EnvType.LOOPING && synth.shouldLoop)
+                {
                     synth.trigger(synth.velocity);
+                }
                 else
+                {
                     synth.stopOscs();
+                    console.log('stop oscs');
+                }
             }
 
             synth.analyser.getFloatTimeDomainData(synth.timeDomainF);
