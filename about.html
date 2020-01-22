@@ -173,10 +173,13 @@
                 var minFreq = 200.0;
                 if (demoSynth)
                 {
+                    demoSynth.noteOff();
+                    demoSynth.setNumOscs(3);
                     demoSynth.attackTime = 0.2;
                     demoSynth.releaseTime = 1.9;
                     demoSynth.filter.frequency.value = 500.0;
                     demoSynth.envType = EnvType.HOLD;
+                    demoSynth.reset();
                 }
                 demoContext.updateSynthParams = function()
                 {
@@ -223,10 +226,13 @@
                 threeDemo = new ThreeJSDemo ("three-demo-container", "three-demo-canvas", 'shaders/sphere-vertex-extrusion/frag.js', 'shaders/sphere-vertex-extrusion/vert.js', sphereShadersLoadedCallback, demoContext);
                 if (demoSynth)
                 {
+                    demoSynth.noteOff();
+                    demoSynth.setNumOscs(3);
                     demoSynth.attackTime = 0.02;
                     demoSynth.releaseTime = 0.1;
                     demoSynth.filter.frequency.value = 800.0;
                     demoSynth.envType = EnvType.LOOPING;
+                    demoSynth.reset();
                 }
                 demoContext.updateSynthParams = function()
                 {
@@ -267,6 +273,41 @@
                 $('#demo-blurb').text("I like things that encourage creativity, playfulness and exploration.");
                 demoContext = new massSpringStringContext();
                 threeDemo = new ThreeJSDemo ("three-demo-container", "three-demo-canvas", 'shaders/circles/frag.js', 'shaders/circles/vert.js', planeShadersLoadedCallback, demoContext);
+                if (demoSynth)
+                {
+                    demoSynth.noteOff();
+                    demoSynth.setNumOscs(5);
+                    demoSynth.attackTime = 0.02;
+                    demoSynth.releaseTime = 0.1;
+                    demoSynth.filter.frequency.value = 800.0;
+                    demoSynth.envType = EnvType.LOOPING;
+                    demoSynth.reset();
+                }
+                demoContext.updateSynthParams = function()
+                {
+                    if (demoSynth)
+                    {
+                    }
+                }
+                threeDemo.customUniformsContext = demoContext;
+                function springMouseHandler()
+                {
+                    this.mouseDown = function(normedMouseEvent)
+                    {
+                        if (demoSynth)
+                        {
+                        }
+                    }
+                    this.mouseUp = function(normedMouseEvent)
+                    {
+                        demoSynth.noteOff();
+                    }
+                    this.mouseMoved = function(normedMouseEvent)
+                    {
+
+                    }
+                }
+                threeDemo.mouseHandler = new springMouseHandler();
             }
             var demoLoadFunctions = [loadSphereDemo, loadWavesDemo, loadSpringDemo];
 
