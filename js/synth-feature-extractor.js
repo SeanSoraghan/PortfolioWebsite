@@ -12,7 +12,8 @@ const EnvType =
 {
     HOLD: 'hold',
     LOOPING: 'looping',
-    ONE_SHOT: 'one_shot'
+    ONE_SHOT: 'one_shot',
+    INFINITE: 'infinite'
 }
 
 function Synth(audioCtx, windowSize, waveformType, freq)
@@ -70,6 +71,14 @@ function Synth(audioCtx, windowSize, waveformType, freq)
         synth.shouldRelease = false;
         synth.shouldLoop = true;
 
+        synth.killOscs = function()
+        {
+            for (var oscIndex = 0; oscIndex < synth.numOscs; oscIndex++)
+            {
+                var osc = synth.oscs[oscIndex];
+                osc.stop();
+            }
+        }
         synth.initialiseOscs = function()
         {
             synth.oscs = [];
@@ -103,7 +112,28 @@ function Synth(audioCtx, windowSize, waveformType, freq)
 
         synth.setNumOscs = function(numOscs)
         {
+            synth.killOscs();
             synth.numOscs = numOscs;
+            synth.initialiseOscs();
+        }
+
+        synth.setEnvType = function(envType)
+        {
+            synth.envType = envType;
+            if (synth.envType === EnvType.INFINITE)
+            {
+                for (var oscIndex = 0; oscIndex < synth.numOscs; oscIndex++)
+                {
+                    var envGain = synth.envGainNodes[oscIndex];
+                    if (envGain != null)
+                    {
+                        var g = envGain.gain;
+                        var now = audioCtx.currentTime;
+                        g.cancelScheduledValues(now);
+                        g.setValueAtTime(0.1, now);
+                    }
+                }
+            }
         }
 
         synth.initialiseOscs();
@@ -118,7 +148,7 @@ function Synth(audioCtx, windowSize, waveformType, freq)
         {
             synth.harmonicsMultiplier = newH;
             synth.setOscFreqs();
-            synth.setGains();
+            synth.updateGains();
         }
 
         synth.setOscFreqs = function()
@@ -137,7 +167,7 @@ function Synth(audioCtx, windowSize, waveformType, freq)
             }
         }
 
-        synth.setGains = function()
+        synth.updateGains = function()
         {
             for (var oscIndex = 0; oscIndex < synth.numOscs; oscIndex++)
             {
@@ -152,6 +182,44 @@ function Synth(audioCtx, windowSize, waveformType, freq)
                         g.exponentialRampToValueAtTime(silence, now + 0.1);
                     else
                         g.exponentialRampToValueAtTime((1.0 - (oscIndex / synth.numOscs)) * 0.5, now + 0.1);
+                }
+            }
+        }
+
+        synth.setOscGainsDirect = function(gains)
+        {
+            for (var oscIndex = 0; oscIndex < synth.numOscs; oscIndex++)
+            {
+                var oscGain = synth.oscGainNodes[oscIndex];
+                if (oscGain != null)
+                {
+                    var g = oscGain.gain;
+                    var now = audioCtx.currentTime;
+                    if (g.value === 0.0)
+                        g.setValueAtTime(silence, now);
+                    else
+                        g.setValueAtTime(g.value, now);
+                    g.exponentialRampToValueAtTime(Math.max(gains[oscIndex], silence), now + 0.1);
+                }
+            }
+        }
+
+        synth.setOscFreqsDirect = function(freqs)
+        {
+            const minFreq = 10.0;
+            for (var oscIndex = 0; oscIndex < synth.numOscs; oscIndex++)
+            {
+                var osc = synth.oscs[oscIndex];
+                if (osc != null)
+                {
+                    var f = osc.frequency;
+                    var now = audioCtx.currentTime;
+                    if (f.value === 0.0)
+                        f.setValueAtTime(minFreq, now);
+                    else
+                        f.setValueAtTime(f.value, now);
+                    f.exponentialRampToValueAtTime(Math.max(freqs[oscIndex], minFreq), now + 0.1);
+                    console.log(f.value);
                 }
             }
         }
@@ -206,6 +274,8 @@ function Synth(audioCtx, windowSize, waveformType, freq)
                 synth.shouldRelease = true;
             else if (synth.envType === EnvType.LOOPING)
                 synth.shouldLoop = false;
+            else if (synth.envType === EnvType.INFINITE)
+                synth.stopOscs();
         }
         synth.triggerReleasePortion = function ()
         {
@@ -274,36 +344,39 @@ function Synth(audioCtx, windowSize, waveformType, freq)
     {
         synth.audioProcessingNode.onaudioprocess = function (audioProcessingEvent)
         {
-            if (synth.envState === EnvState.ATTACK && synth.sustainReached())
+            if (synth.envType != EnvType.INFINITE)
             {
-                synth.envState = EnvState.SUSTAIN;
-                if (synth.envType === EnvType.LOOPING || synth.envType === EnvType.ONE_SHOT)
-                    synth.shouldRelease = true;
-            }
-            if (synth.envState === EnvState.SUSTAIN)
-            {
-                if (synth.shouldRelease)
+                if (synth.envState === EnvState.ATTACK && synth.sustainReached())
                 {
-                    synth.triggerReleasePortion();
+                    synth.envState = EnvState.SUSTAIN;
+                    if (synth.envType === EnvType.LOOPING || synth.envType === EnvType.ONE_SHOT)
+                        synth.shouldRelease = true;
                 }
-            }
-            if (synth.envState === EnvState.RELEASE)
-            {
-                if (synth.envComplete())
+                if (synth.envState === EnvState.SUSTAIN)
                 {
-                    synth.envState = EnvState.COMPLETE;
+                    if (synth.shouldRelease)
+                    {
+                        synth.triggerReleasePortion();
+                    }
                 }
-            }
-            if (synth.envState === EnvState.COMPLETE)
-            {
-                if (synth.envType === EnvType.LOOPING && synth.shouldLoop)
+                if (synth.envState === EnvState.RELEASE)
                 {
-                    synth.trigger(synth.velocity);
+                    if (synth.envComplete())
+                    {
+                        synth.envState = EnvState.COMPLETE;
+                    }
                 }
-                else
+                if (synth.envState === EnvState.COMPLETE)
                 {
-                    synth.stopOscs();
-                    console.log('stop oscs');
+                    if (synth.envType === EnvType.LOOPING && synth.shouldLoop)
+                    {
+                        synth.trigger(synth.velocity);
+                    }
+                    else
+                    {
+                        synth.stopOscs();
+                        console.log('stop oscs');
+                    }
                 }
             }
 

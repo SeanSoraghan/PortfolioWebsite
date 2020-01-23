@@ -70,10 +70,11 @@ function massSpringStringContext()
     // Y force values acting on the 8 points.
     this.forceArray = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
 
-    this.stiffness = 80.0;
-    this.stiffnessArray = [80.0, 80.0, 75.0, 60.0, 60.0, 75.0, 80.0, 80.0];
-    this.dampingFactor = 0.6;
-    this.mass = 1.0;
+    this.stiffness = 90.0;
+    var s = this.stiffness;
+    this.stiffnessArray = [s, s, s, s, s, s, s, s];
+    this.dampingFactor = 0.99;
+    this.mass = 0.6;
     this.maxForce = 50.0;
 
     this.clock = new THREE.Clock();
@@ -191,6 +192,8 @@ function massSpringStringContext()
         posRight.fromArray(this.posArray, 4);
         this.uniforms.yPointsLeft.value = posLeft;
         this.uniforms.yPointsRight.value = posRight;
+        if (this.updateSynthParams)
+            this.updateSynthParams();
         this.uniforms.time.value += deltaTime;
     }
 }
