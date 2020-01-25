@@ -70,12 +70,16 @@ function massSpringStringContext()
     // Y force values acting on the 8 points.
     this.forceArray = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
 
-    this.stiffness = 90.0;
+    this.stiffness = 30.0;
     var s = this.stiffness;
-    this.stiffnessArray = [s, s, s, s, s, s, s, s];
-    this.dampingFactor = 0.99;
+    this.stiffnessArray = [0.25*s, 0.5*s, 1.0*s, 2.0*s, 2.0*s, 1.0*s, 0.5*s, 0.25*s];
+    this.dampingFactor = 1.0;
+    var d = this.dampingFactor;
+    this.dampingArray = [2.0 * d, 0.25 * d, 0.05 * d, 0.01 * d, 0.01 * d, 0.05 * d, 0.25 * d, 2.0 * d];
     this.mass = 0.6;
-    this.maxForce = 50.0;
+    this.maxForce = 10.0;
+
+    this.applyInputForce = false;
 
     this.clock = new THREE.Clock();
 
@@ -136,7 +140,7 @@ function massSpringStringContext()
             var p = this.posArray[i];
             var v = this.velArray[i];
             var s = this.stiffnessArray[i];
-            var d = this.dampingFactor;
+            var d = this.dampingArray[i];
 
             internalForce += getForce(p, this.posArray[i + 1], v, this.velArray[i + 1], s, d);
 
@@ -175,13 +179,20 @@ function massSpringStringContext()
 
         var y = this.uniforms.mouseY.value * 2.0 - 1.0;
         var x = this.uniforms.mouseX.value * 2.0 - 1.0;
-        if (y >= -1.0 && y <= 1.0 && x >= this.xPosArray[0] && x <= this.xPosArray[this.numPoints - 1])
+
+        if (y < -1.0 || y > 1.0 || x < -1.0 || x > 1.0)
+            this.applyInputForce = false;
+        if (this.applyInputForce)
         {
-            index = this.findClosestXPointIndex(x);
-            // ensure we don't change the position of the end points.
-            index = Math.max(index, 1);
-            index = Math.min(index, this.numPoints - 2);
-            this.forceArray[index] =  -y * this.maxForce;
+
+            if (y >= -1.0 && y <= 1.0 && x >= this.xPosArray[0] && x <= this.xPosArray[this.numPoints - 1])
+            {
+                index = this.findClosestXPointIndex(x);
+                // ensure we don't change the position of the end points.
+                index = Math.max(index, 1);
+                index = Math.min(index, this.numPoints - 2);
+                this.forceArray[index] =  -y * this.maxForce;
+            }
         }
 
         this.updatePoints(deltaTime);

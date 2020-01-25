@@ -263,7 +263,25 @@
                     }
                     this.mouseMoved = function(normedMouseEvent)
                     {
-
+                        var minT = 0.0025;
+                        var maxT = 0.2;
+                        var maxSustain = 0.3;
+                        // need to work out the mapping here. min segment time gives fast looping, and we want log scale
+                        // from slow to fast. So log scale from maxT to minT...
+                        var logMouseY = Math.log10(9*(1.0 - normedMouseEvent.y) + 1.0);
+                        var segmentTime = (1.0 - logMouseY) * (maxT - minT) + minT;
+                        if (segmentTime > maxT)
+                            segmentTime = maxT;
+                        if (segmentTime < minT)
+                            segmentTime = minT
+                        demoSynth.decayTime = segmentTime;
+                        demoSynth.releaseTime = segmentTime;
+                        var sustainTime = (1.0 - logMouseY) * (maxSustain - minT) + minT;
+                        if (sustainTime > maxSustain)
+                            sustainTime = maxSustain;
+                        if (sustainTime < minT)
+                            sustainTime = minT
+                        demoSynth.sustainTime = segmentTime;
                     }
                 }
                 threeDemo.mouseHandler = new sphereMouseHandler();
@@ -273,18 +291,23 @@
                 $('#demo-blurb').text("I like things that encourage creativity, playfulness and exploration.");
                 demoContext = new massSpringStringContext();
                 var maxFreq = 500.0;
-                var minFreq = 100.0;
+                var minFreq = 10.0;
                 demoContext.updateSynthParams = function()
                 {
                     if (demoSynth)
                     {
+                        // PAN??
+                        var globalGain = 0.18;
                         var gains = [];
                         var freqs = [];
+                        var freqDist = 50.0;
+                        //if (demoContext)
+                        //    freqDist = demoContext.uniforms.mouseX.value * 500.0;
                         for (let i = 0; i < demoContext.numPoints - 2/*anchor points at either end of the string*/; ++i)
                         {
-                            gains.push(Math.abs(demoContext.velArray[i]) * 0.05);
+                            gains.push(Math.abs(demoContext.velArray[i]) * globalGain);
                             var posZeroToOne = demoContext.posArray[i] * 0.5 + 0.5;
-                            var freqOffset = i * 50.0;
+                            var freqOffset = i * freqDist;
                             freqs.push(posZeroToOne * (maxFreq - minFreq) + minFreq + freqOffset);
                         }
                         demoSynth.setOscGainsDirect(gains);
@@ -308,12 +331,14 @@
                 {
                     this.mouseDown = function(normedMouseEvent)
                     {
+                        demoContext.applyInputForce = true;
                         if (demoSynth)
                         {
                         }
                     }
                     this.mouseUp = function(normedMouseEvent)
                     {
+                        demoContext.applyInputForce = false;
                     }
                     this.mouseMoved = function(normedMouseEvent)
                     {

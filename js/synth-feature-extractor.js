@@ -219,7 +219,6 @@ function Synth(audioCtx, windowSize, waveformType, freq)
                     else
                         f.setValueAtTime(f.value, now);
                     f.exponentialRampToValueAtTime(Math.max(freqs[oscIndex], minFreq), now + 0.1);
-                    console.log(f.value);
                 }
             }
         }
