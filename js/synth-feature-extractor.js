@@ -230,6 +230,20 @@ function Synth(audioCtx, windowSize, waveformType, freq)
             synth.stopOscs();
         }
 
+        synth.setParams = function(waveform, numOscs, a, d, s, r, freq, envType)
+        {
+            synth.noteOff();
+            synth.waveform = waveform;
+            synth.setNumOscs(numOscs);
+            synth.attackTime = a;
+            synth.decayTime = d;
+            synth.sustainTime = s;
+            synth.releaseTime = r;
+            synth.filter.frequency.value = freq;
+            synth.reset();
+            synth.setEnvType(envType);
+        }
+
         synth.trigger = function (velocity)
         {
             console.log('freq: ' + synth.centreFrequency + ' h: ' + synth.harmonicsMultiplier);
@@ -261,6 +275,7 @@ function Synth(audioCtx, windowSize, waveformType, freq)
                         }
                         g.exponentialRampToValueAtTime(velocity, t + synth.attackTime);
                         t = t + synth.attackTime;
+                        console.log('gTarg: ' + velocity * synth.sustainProportion + ' t: ' + (t + synth.decayTime));
                         g.exponentialRampToValueAtTime((velocity * synth.sustainProportion), t + synth.decayTime);
                     }
                 }

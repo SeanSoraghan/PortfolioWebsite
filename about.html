@@ -164,6 +164,15 @@
         <script>
             var threeDemo = null;
             var demoContext = null;
+            var mouseHandler = function()
+            {
+                this.mouseUp = function(normedMouseEvent)
+                {
+                    if (demoSynth)
+                        demoSynth.noteOff();
+                }
+            }
+            var mouseHandler = new mouseHandler();
             var loadWavesDemo = function()
             {
                 $("#demo-blurb").text("I like things that combine audio, graphics and interaction design.");
@@ -173,13 +182,7 @@
                 var minFreq = 200.0;
                 if (demoSynth)
                 {
-                    demoSynth.noteOff();
-                    demoSynth.setNumOscs(3);
-                    demoSynth.attackTime = 0.2;
-                    demoSynth.releaseTime = 1.9;
-                    demoSynth.filter.frequency.value = 500.0;
-                    demoSynth.envType = EnvType.HOLD;
-                    demoSynth.reset();
+                    demoSynth.setParams(0, 3, /*a*/0.2, /*d*/0.1, /*s*/0.1, /*r*/1.9, 500.0, EnvType.HOLD);
                 }
                 demoContext.updateSynthParams = function()
                 {
@@ -192,32 +195,30 @@
                     }
                 }
                 threeDemo.customUniformsContext = demoContext;
-                function wavesMouseHandler()
+                mouseHandler.mouseDown = function(normedMouseEvent)
                 {
-                    this.mouseDown = function(normedMouseEvent)
+                    if (demoSynth)
                     {
-                        if (demoSynth)
-                        {
-                            var pitch = normedMouseEvent.x;
-                            var h = (1.0 - normedMouseEvent.y) * 0.5;
-                            console.log('h: ' + h + ' p: ' + pitch);
-                            demoSynth.harmonicsMultiplier = h;
-                            demoSynth.setCentreFrequency(pitch * (maxFreq - minFreq) + minFreq);
-                            demoSynth.trigger(0.3);
-                        }
-                    }
-                    this.mouseUp = function(normedMouseEvent)
-                    {
-                        demoSynth.noteOff();
-                    }
-                    this.mouseMoved = function(normedMouseEvent)
-                    {
-                        demoSynth.setCentreFrequency(normedMouseEvent.x * (maxFreq - minFreq) + minFreq);
+                        var pitch = normedMouseEvent.x;
                         var h = (1.0 - normedMouseEvent.y) * 0.5;
-                        demoSynth.setHarmonicsMultiplier(h);
+                        console.log('h: ' + h + ' p: ' + pitch);
+                        demoSynth.harmonicsMultiplier = h;
+                        demoSynth.setCentreFrequency(pitch * (maxFreq - minFreq) + minFreq);
+                        demoSynth.trigger(0.3);
                     }
                 }
-                threeDemo.mouseHandler = new wavesMouseHandler();
+                mouseHandler.mouseUp = function(normedMouseEvent)
+                {
+                    if (demoSynth)
+                        demoSynth.noteOff();
+                }
+                mouseHandler.mouseMoved = function(normedMouseEvent)
+                {
+                    demoSynth.setCentreFrequency(normedMouseEvent.x * (maxFreq - minFreq) + minFreq);
+                    var h = (1.0 - normedMouseEvent.y) * 0.5;
+                    demoSynth.setHarmonicsMultiplier(h);
+                }
+                threeDemo.mouseHandler = mouseHandler;
             }
             var loadSphereDemo = function()
             {
@@ -226,13 +227,7 @@
                 threeDemo = new ThreeJSDemo ("three-demo-container", "three-demo-canvas", 'shaders/sphere-vertex-extrusion/frag.js', 'shaders/sphere-vertex-extrusion/vert.js', sphereShadersLoadedCallback, demoContext);
                 if (demoSynth)
                 {
-                    demoSynth.noteOff();
-                    demoSynth.setNumOscs(3);
-                    demoSynth.attackTime = 0.02;
-                    demoSynth.releaseTime = 0.1;
-                    demoSynth.filter.frequency.value = 800.0;
-                    demoSynth.envType = EnvType.LOOPING;
-                    demoSynth.reset();
+                    demoSynth.setParams(0, 3, /*a*/0.02, /*d*/0.1, /*s*/0.1, /*r*/0.1, 800.0, EnvType.LOOPING);
                 }
                 demoContext.updateSynthParams = function()
                 {
@@ -246,45 +241,43 @@
                     }
                 }
                 threeDemo.customUniformsContext = demoContext;
-                function sphereMouseHandler()
+                mouseHandler.mouseDown = function(normedMouseEvent)
                 {
-                    this.mouseDown = function(normedMouseEvent)
+                    if (demoSynth)
                     {
-                        if (demoSynth)
-                        {
-                            demoSynth.setHarmonicsMultiplier(0.5);
-                            demoSynth.setCentreFrequency(200.0);
-                            demoSynth.trigger(0.2);
-                        }
-                    }
-                    this.mouseUp = function(normedMouseEvent)
-                    {
-                        demoSynth.noteOff();
-                    }
-                    this.mouseMoved = function(normedMouseEvent)
-                    {
-                        var minT = 0.0025;
-                        var maxT = 0.2;
-                        var maxSustain = 0.3;
-                        // need to work out the mapping here. min segment time gives fast looping, and we want log scale
-                        // from slow to fast. So log scale from maxT to minT...
-                        var logMouseY = Math.log10(9*(1.0 - normedMouseEvent.y) + 1.0);
-                        var segmentTime = (1.0 - logMouseY) * (maxT - minT) + minT;
-                        if (segmentTime > maxT)
-                            segmentTime = maxT;
-                        if (segmentTime < minT)
-                            segmentTime = minT
-                        demoSynth.decayTime = segmentTime;
-                        demoSynth.releaseTime = segmentTime;
-                        var sustainTime = (1.0 - logMouseY) * (maxSustain - minT) + minT;
-                        if (sustainTime > maxSustain)
-                            sustainTime = maxSustain;
-                        if (sustainTime < minT)
-                            sustainTime = minT
-                        demoSynth.sustainTime = segmentTime;
+                        demoSynth.setHarmonicsMultiplier(0.5);
+                        demoSynth.setCentreFrequency(200.0);
+                        demoSynth.trigger(0.2);
                     }
                 }
-                threeDemo.mouseHandler = new sphereMouseHandler();
+                mouseHandler.mouseUp = function(normedMouseEvent)
+                {
+                    if (demoSynth)
+                        demoSynth.noteOff();
+                }
+                mouseHandler.mouseMoved = function(normedMouseEvent)
+                {
+                    var minT = 0.0025;
+                    var maxT = 0.2;
+                    var maxSustain = 0.3;
+                    // need to work out the mapping here. min segment time gives fast looping, and we want log scale
+                    // from slow to fast. So log scale from maxT to minT...
+                    var logMouseY = Math.log10(9*(1.0 - normedMouseEvent.y) + 1.0);
+                    var segmentTime = (1.0 - logMouseY) * (maxT - minT) + minT;
+                    if (segmentTime > maxT)
+                        segmentTime = maxT;
+                    if (segmentTime < minT)
+                        segmentTime = minT
+                    demoSynth.decayTime = segmentTime;
+                    demoSynth.releaseTime = segmentTime;
+                    var sustainTime = (1.0 - logMouseY) * (maxSustain - minT) + minT;
+                    if (sustainTime > maxSustain)
+                        sustainTime = maxSustain;
+                    if (sustainTime < minT)
+                        sustainTime = minT
+                    demoSynth.sustainTime = segmentTime;
+                }
+                threeDemo.mouseHandler = mouseHandler;
             }
             var loadSpringDemo = function()
             {
@@ -297,7 +290,7 @@
                     if (demoSynth)
                     {
                         // PAN??
-                        var globalGain = 0.18;
+                        var globalGain = 0.45;
                         var gains = [];
                         var freqs = [];
                         var freqDist = 50.0;
@@ -317,35 +310,27 @@
                 threeDemo = new ThreeJSDemo ("three-demo-container", "three-demo-canvas", 'shaders/circles/frag.js', 'shaders/circles/vert.js', planeShadersLoadedCallback, demoContext);
                 if (demoSynth)
                 {
+                    var numOscs = demoContext.numPoints - 2/*anchor points at either end of the string*/;
+                    demoSynth.setParams(0, numOscs, /*a*/0.02, /*d*/0.1, /*s*/0.1, /*r*/0.1, 800.0, EnvType.INFINITE);
                     demoSynth.noteOff();
-                    //demoSynth.waveform = 2;
-                    demoSynth.setNumOscs(demoContext.numPoints - 2/*anchor points at either end of the string*/);
-                    demoSynth.attackTime = 0.02;
-                    demoSynth.releaseTime = 0.1;
-                    demoSynth.filter.frequency.value = 800.0;
-                    demoSynth.reset();
-                    demoSynth.setEnvType(EnvType.INFINITE);
                 }
                 threeDemo.customUniformsContext = demoContext;
-                function springMouseHandler()
+                mouseHandler.mouseDown = function(normedMouseEvent)
                 {
-                    this.mouseDown = function(normedMouseEvent)
+                    demoContext.applyInputForce = true;
+                    if (demoSynth)
                     {
-                        demoContext.applyInputForce = true;
-                        if (demoSynth)
-                        {
-                        }
-                    }
-                    this.mouseUp = function(normedMouseEvent)
-                    {
-                        demoContext.applyInputForce = false;
-                    }
-                    this.mouseMoved = function(normedMouseEvent)
-                    {
-
                     }
                 }
-                threeDemo.mouseHandler = new springMouseHandler();
+                mouseHandler.mouseUp = function(normedMouseEvent)
+                {
+                    demoContext.applyInputForce = false;
+                }
+                mouseHandler.mouseMoved = function(normedMouseEvent)
+                {
+
+                }
+                threeDemo.mouseHandler = mouseHandler;
             }
             var demoLoadFunctions = [loadSphereDemo, loadWavesDemo, loadSpringDemo];
 
