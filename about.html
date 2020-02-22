@@ -54,6 +54,10 @@
                 catch(e) {
                     alert('Web Audio API is not supported in this browser');
                 }
+                if (load_section)
+                {
+                    load_section(0);
+                }
             }
             //https://developers.google.com/web/updates/2017/09/autoplay-policy-changes#webaudio
             function resumeAudio()
@@ -123,7 +127,6 @@
                         <div class="grid-x align-center">
                             <div class="cell small-10 para-wide">
                                 <p id="demo-blurb" class="text-dark montserrat">
-                                    Some text explaining the thing above, especially highlighting its key qualities.
                                 </p>
                             </div>
                         </div>
@@ -339,6 +342,8 @@
                 console.log("load content: " + i_section_index);
                 if (i_section_index == 0)
                 {
+                    collapse_div('#demos');
+                    collapse_div('#outro');
                     expand_div("#intro");
                 }
                 else if (i_section_index < i_num_sections - 1)

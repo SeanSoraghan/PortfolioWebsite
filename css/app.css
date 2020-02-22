@@ -8,11 +8,14 @@
 .full-page{
     height: calc(100vh - 50px);
 }
+.half-page{
+    height: calc(50vh - 50px);
+}
 .full-page-bottom-bar{
     height: calc(100vh - 100px);
 }
 .plugins-main-content{
-    height: calc(4 * (100vh - 50px));/*calc(5*40vh + 5*5vh);*/
+    height: calc(4 * (50vh - 50px));/*calc(5*40vh + 5*5vh);*/
 }
 
 /* Page backgrounds */
