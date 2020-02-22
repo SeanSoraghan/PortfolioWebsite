@@ -4,13 +4,24 @@ var menu_name = "Home",
 
 function is_thin_screen()
 {
+    return screen.width < 700;
+}
+function check_redirect()
+{
+    if (is_thin_screen())
+    {
+        document.location = 'https://seansoraghan.github.io';
+    }
+}
+function is_thin_window()
+{
     return window.innerWidth <= 800;
 }
 function update_nav_menu()
 {
     if (nav_menu_div != null)
     {
-        if (is_thin_screen())
+        if (is_thin_window())
         {
             nav_menu_div.load('html-blocks/nav-menu-dropdown.html');
         }
