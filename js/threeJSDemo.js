@@ -20,7 +20,6 @@ function ThreeJSDemo (containerID, canvasID, fragURL, vertURL, shadersLoadedCall
         var container = document.getElementById (containerID);
         var contW = container.clientWidth;
         var contH = container.clientHeight;
-        console.log('Update dimensions: ' + contW + ' ' + contH);
         if (forceUpdate || threeDemo.canvas.width != contW || threeDemo.canvas.height != contH)
         {
             threeDemo.width = contW;
@@ -43,11 +42,19 @@ function ThreeJSDemo (containerID, canvasID, fragURL, vertURL, shadersLoadedCall
             {
                 document.detachEvent('onmousemove', mouseMoved);
                 document.detachEvent('onmousedown', mouseDown);
+                document.detachEvent('onmouseup', mouseUp);
+                document.detachEvent('ontouchmove', mouseMoved);
+                document.detachEvent('ontouchstart', mouseDown);
+                document.detachEvent('ontouchend', mouseUp);
             }
             else
             {
+                document.removeEventListener('touchmove', mouseMoved);
+                document.removeEventListener('touchstart', mouseDown);
+                document.removeEventListener('touchend', mouseUp);
                 document.removeEventListener('mousemove', mouseMoved);
                 document.removeEventListener('mousedown', mouseDown);
+                document.removeEventListener('mouseup', mouseUp);
             }
             t.swap();
             //t = null;
@@ -70,7 +77,6 @@ function ThreeJSDemo (containerID, canvasID, fragURL, vertURL, shadersLoadedCall
         t.camera.aspect = t.aspect;
         t.camera.updateProjectionMatrix();
         t.renderer.setSize ( t.width, t.height );
-        console.log("w: " + t.width + " h: " + t.height + " aspect: " + t.aspect);
         if (t.customUniformsContext)
         {
             t.customUniformsContext.uniforms.resolution.value = new THREE.Vector2 (t.width, t.height);
@@ -135,7 +141,14 @@ function ThreeJSDemo (containerID, canvasID, fragURL, vertURL, shadersLoadedCall
 
     this.getNormedMousePos = function(mouseEvent)
     {
+
         var mousePos = new THREE.Vector2 (mouseEvent.x, mouseEvent.y);
+        if (mouseEvent.touches)
+        {
+            touch = mouseEvent.touches[0];
+            if (touch)
+                mousePos = new THREE.Vector2 (touch.clientX, touch.clientY);
+        }
         var rect = t.canvas.getBoundingClientRect(); // abs. size of element
         // screen coordinates
         var mousePosInCanvas = getMousePos(t.canvas, rect, mousePos);
@@ -183,10 +196,10 @@ function ThreeJSDemo (containerID, canvasID, fragURL, vertURL, shadersLoadedCall
         if (t.mouseHandler)
         {
             var mappedMouse = t.getNormedMousePos(mouseEvent);
-            if (mappedMouse.x <= 1.0 && mappedMouse.y <= 1.0 && mappedMouse.x >= 0.0 && mappedMouse.y >= 0.0)
-            {
+            //if (mappedMouse.x <= 1.0 && mappedMouse.y <= 1.0 && mappedMouse.x >= 0.0 && mappedMouse.y >= 0.0)
+            //{
                 t.mouseHandler.mouseUp(mappedMouse);
-            }
+            //}
         }
     }
 
@@ -205,17 +218,36 @@ function ThreeJSDemo (containerID, canvasID, fragURL, vertURL, shadersLoadedCall
         threeDemo.scene.add (threeDemo.camera);
 
         // Input handling
+        //need to work with TouchEvent.touches[0].screenX / clientX / pageX for touch input!
         if (document.attachEvent)
         {
-            document.attachEvent('onmousemove', mouseMoved);
-            document.attachEvent('onmousedown', mouseDown);
-            document.attachEvent('onmouseup', mouseUp);
+            if (is_thin_window())
+            {
+                document.attachEvent('ontouchstart', mouseDown);
+                document.attachEvent('ontouchend', mouseUp);
+                document.attachEvent('ontouchmove', mouseMoved);
+            }
+            else
+            {
+                document.attachEvent('onmousemove', mouseMoved);
+                document.attachEvent('onmousedown', mouseDown);
+                document.attachEvent('onmouseup', mouseUp);
+            }
         }
         else
         {
-            document.addEventListener('mousemove', mouseMoved);
-            document.addEventListener('mousedown', mouseDown);
-            document.addEventListener('mouseup', mouseUp);
+            if (is_thin_window())
+            {
+                document.addEventListener('touchstart', mouseDown);
+                document.addEventListener('touchend', mouseUp);
+                document.addEventListener('touchmove', mouseMoved);
+            }
+            else
+            {
+                document.addEventListener('mousemove', mouseMoved);
+                document.addEventListener('mousedown', mouseDown);
+                document.addEventListener('mouseup', mouseUp);
+            }
         }
     }
 

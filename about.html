@@ -22,6 +22,9 @@
     <script data-src="shaders/spiral/frag.js" data-name="spiral" type="x-shader/x-fragment"></script>
     <script data-src="shaders/sphere-vertex-extrusion/vert.js" data-name="sphere" type="x-shader/x-vertex"></script>
     <script data-src="shaders/sphere-vertex-extrusion/frag.js" data-name="sphere" type="x-shader/x-fragment"></script>
+
+    <script src="js/check_screen_width.js"></script>
+
     <script src="js/threejs/build/three.js"></script>
     <script src="js/threeJSDemo.js"></script>
     <script src="js/shaderLoadedCallbacks.js"></script>
@@ -29,7 +32,7 @@
     <script src="js/threeDemoContexts.js"></script>
     <script src="shaders/loader/ShaderLoader.min.js"></script>
 
-    <script src="js/check_screen_width.js"></script>
+
     <body onresize="screen_resized()" scroll="no" style="overflow: hidden">
         <!-- ================================================================================================= -->
         <!-- Web Audio Initialisation -->
@@ -204,7 +207,6 @@
                     {
                         var pitch = normedMouseEvent.x;
                         var h = (1.0 - normedMouseEvent.y) * 0.5;
-                        console.log('h: ' + h + ' p: ' + pitch);
                         demoSynth.harmonicsMultiplier = h;
                         demoSynth.setCentreFrequency(pitch * (maxFreq - minFreq) + minFreq);
                         demoSynth.trigger(0.3);
@@ -339,7 +341,6 @@
 
             var fn_load_content = function(i_section_index)
             {
-                console.log("load content: " + i_section_index);
                 if (i_section_index == 0)
                 {
                     collapse_div('#demos');
@@ -349,7 +350,6 @@
                 else if (i_section_index < i_num_sections - 1)
                 {
                     collapse_div("#intro");
-                    console.log("collapsed intro. loading demo: " + i_section_index);
                     expand_div("#demos", function()
                     {
                         if (threeDemo)

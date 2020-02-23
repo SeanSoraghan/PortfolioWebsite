@@ -246,7 +246,6 @@ function Synth(audioCtx, windowSize, waveformType, freq)
 
         synth.trigger = function (velocity)
         {
-            console.log('freq: ' + synth.centreFrequency + ' h: ' + synth.harmonicsMultiplier);
             synth.reset();
             synth.lastTriggerTime = audioCtx.currentTime;
             if (velocity > 0)
@@ -275,7 +274,6 @@ function Synth(audioCtx, windowSize, waveformType, freq)
                         }
                         g.exponentialRampToValueAtTime(velocity, t + synth.attackTime);
                         t = t + synth.attackTime;
-                        console.log('gTarg: ' + velocity * synth.sustainProportion + ' t: ' + (t + synth.decayTime));
                         g.exponentialRampToValueAtTime((velocity * synth.sustainProportion), t + synth.decayTime);
                     }
                 }
@@ -331,7 +329,6 @@ function Synth(audioCtx, windowSize, waveformType, freq)
         {
             if (audioCtx.currentTime > synth.lastTriggerTime + synth.getTotalEnvTime())
                 return 0.0;
-            //console.log('current: ' + audioCtx.currentTime + ' end: ' + (synth.lastTriggerTime + synth.getTotalEnvTime()));
             return (audioCtx.currentTime - synth.lastTriggerTime) / (synth.lastTriggerTime + synth.getTotalEnvTime());
         }
         synth.sustainReached = function()
@@ -389,7 +386,6 @@ function Synth(audioCtx, windowSize, waveformType, freq)
                     else
                     {
                         synth.stopOscs();
-                        console.log('stop oscs');
                     }
                 }
             }

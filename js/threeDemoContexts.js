@@ -16,7 +16,6 @@ function mouseCursorStrummer(plucker)
 
 function wavesContext()
 {
-    console.log('new waves context');
     this.uniforms =
     {
         time: {type: 'f', value: 0.0},
@@ -38,7 +37,6 @@ function wavesContext()
 
 function sphereContext()
 {
-    console.log('new waves context');
     this.uniforms =
     {
         time: {type: 'f', value: 0.0},
