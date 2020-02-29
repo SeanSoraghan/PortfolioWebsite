@@ -194,6 +194,8 @@
                 {
                     if (demoSynth)
                     {
+                        demoSynth.updateEnvelope();
+                        demoSynth.updateAudioFeatures();
                         demoContext.uniforms.rms.value = demoSynth.rms * 5.0;
                         demoContext.uniforms.pitch.value = (demoSynth.centreFrequency - minFreq) / (maxFreq - minFreq);
                         // harmonicsMultiplier goes from 0. - 0.5.
@@ -238,6 +240,8 @@
                 {
                     if (demoSynth)
                     {
+                        demoSynth.updateEnvelope();
+                        demoSynth.updateAudioFeatures();
                         demoContext.uniforms.rms.value = demoSynth.rms;
                         demoContext.uniforms.envTime.value = demoSynth.getCurrentEnvTime();
                         // demoContext.uniforms.pitch.value = (demoSynth.centreFrequency - minFreq) / (maxFreq - minFreq);
@@ -294,6 +298,8 @@
                 {
                     if (demoSynth)
                     {
+                        demoSynth.updateEnvelope();
+                        demoSynth.updateAudioFeatures();
                         // PAN??
                         var globalGain = 0.45;
                         var gains = [];

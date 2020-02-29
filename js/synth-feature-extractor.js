@@ -19,7 +19,6 @@ const EnvType =
 function Synth(audioCtx, windowSize, waveformType, freq)
 {
     initialiseMembers(this, windowSize, waveformType);
-    initialiseAudioProcessingCallback(this);
 
     function initialiseMembers(synth, windowSize, waveformType)
     {
@@ -34,15 +33,12 @@ function Synth(audioCtx, windowSize, waveformType, freq)
         synth.analyser.getFloatTimeDomainData(synth.timeDomainF);
         synth.analyser.getByteFrequencyData(synth.freqDomain);
 
-        synth.audioProcessingNode = audioCtx.createScriptProcessor(windowSize);
-
         synth.filter = audioCtx.createBiquadFilter();
         synth.filter.type = 'lowpass';
         synth.filter.frequency.value = 2000;
 
         synth.filter.connect(synth.analyser);
-        synth.analyser.connect(synth.audioProcessingNode);
-        synth.audioProcessingNode.connect(audioCtx.destination);
+        synth.analyser.connect(audioCtx.destination);
 
         // Params----------------------------------------------------------;
         synth.envType = EnvType.HOLD;
@@ -60,6 +56,7 @@ function Synth(audioCtx, windowSize, waveformType, freq)
         synth.rms = 0.0;
 
         // Start/stop  Interaction-----------------------------------------;
+        synth.isPlaying = false;
         synth.attackTime = 0.02;
         synth.releaseTime = 0.1;
         synth.decayTime = 0.1;
@@ -252,6 +249,7 @@ function Synth(audioCtx, windowSize, waveformType, freq)
             {
                 synth.velocity = velocity;
                 synth.envState = EnvState.ATTACK;
+                synth.isPlaying = true;
                 for (var oscIndex = 0; oscIndex < synth.numOscs; oscIndex++)
                 {
                     var oscGain = synth.oscGainNodes[oscIndex];
@@ -310,11 +308,15 @@ function Synth(audioCtx, windowSize, waveformType, freq)
         }
         synth.stopOscs = function()
         {
-            var now = audioCtx.currentTime;
-            for (let oscIndex = 0; oscIndex < synth.numOscs; ++oscIndex)
+            if (synth.isPlaying)
             {
-                if (synth.oscGainNodes[oscIndex] != null)
-                    synth.oscGainNodes[oscIndex].gain.setValueAtTime(0.0, now);
+                var now = audioCtx.currentTime;
+                for (let oscIndex = 0; oscIndex < synth.numOscs; ++oscIndex)
+                {
+                    if (synth.oscGainNodes[oscIndex] != null)
+                        synth.oscGainNodes[oscIndex].gain.setValueAtTime(0.0, now);
+                }
+                synth.isPlaying = false;
             }
         }
         synth.getAttackDecayTime = function()
@@ -348,12 +350,8 @@ function Synth(audioCtx, windowSize, waveformType, freq)
             f.cancelScheduledValues(now);
             f.linearRampToValueAtTime(fNow + amt, now + 0.9);
         }
-    }
 
-    // Audio callback -----------------------------------------------------------
-    function initialiseAudioProcessingCallback(synth)
-    {
-        synth.audioProcessingNode.onaudioprocess = function (audioProcessingEvent)
+        synth.updateEnvelope = function()
         {
             if (synth.envType != EnvType.INFINITE)
             {
@@ -389,24 +387,14 @@ function Synth(audioCtx, windowSize, waveformType, freq)
                     }
                 }
             }
+        }
 
+        synth.updateAudioFeatures = function()
+        {
             synth.analyser.getFloatTimeDomainData(synth.timeDomainF);
             synth.analyser.getByteFrequencyData(synth.freqDomain);
             getSpectralCentroid(synth);
             getRMS(synth);
-
-            var inputBuffer = audioProcessingEvent.inputBuffer;
-            var outputBuffer = audioProcessingEvent.outputBuffer;
-
-            for (var channel = 0; channel < outputBuffer.numberOfChannels; channel++)
-            {
-                var inputData = inputBuffer.getChannelData(channel);
-                var outputData = outputBuffer.getChannelData(channel);
-                for (var sample = 0; sample < inputBuffer.length; sample++)
-                {
-                    outputData[sample] = inputData[sample];
-                }
-            }
         }
     }
 
