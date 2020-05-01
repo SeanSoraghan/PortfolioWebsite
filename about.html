@@ -45,6 +45,7 @@
 
                 expand_div('#demos', function(){});
                 expand_div('#outro', function(){});
+                collapse_div('#loading', function(){});
             }
             //https://developers.google.com/web/updates/2017/09/autoplay-policy-changes#webaudio
             function resumeAudio()
@@ -101,6 +102,12 @@
                                 </p>
                             </div>
                         </div>
+                    </div>
+                    <div class="cell small-2"></div>
+                    <div id="loading-text" class="cell small-2">
+                        <p id="loading" class="text-light montserrat">
+                            Loading interactive examples...
+                        </p>
                     </div>
                 </div>
             </div>
