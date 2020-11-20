@@ -336,9 +336,10 @@
                         var minT = 0.0025;
                         var maxT = 0.2;
                         var maxSustain = 0.3;
+                        var distanceFromCentre = (normedMouseEvent.multiplyScalar(2.0).subScalar(1.0)).length() / Math.sqrt(2.0);
                         // need to work out the mapping here. min segment time gives fast looping, and we want log scale
                         // from slow to fast. So log scale from maxT to minT...
-                        var logMouseY = Math.log10(9*(1.0 - normedMouseEvent.y) + 1.0);
+                        var logMouseY = Math.log10(9*(1.0 - distanceFromCentre) + 1.0);
                         var segmentTime = (1.0 - logMouseY) * (maxT - minT) + minT;
                         if (segmentTime > maxT)
                             segmentTime = maxT;
@@ -352,8 +353,6 @@
                         if (sustainTime < minT)
                             sustainTime = minT
                         demoSynth.sustainTime = segmentTime;
-
-                        console.log('synth env time: ' + demoSynth.getTotalEnvTime());
                     }
                 }
                 threeDemo.mouseHandler = mouseHandler;

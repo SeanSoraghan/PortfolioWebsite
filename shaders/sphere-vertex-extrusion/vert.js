@@ -16,16 +16,29 @@ void main()
 	float inclination = acos (position.z / r);
 	float azimuth 	  = atan (position.y / position.x);
 
-	float rotAngle = time * 0.5;
-	mat2 rotation = mat2 (cos (rotAngle*0.2), -sin(rotAngle*0.2), sin (rotAngle*0.2), cos (rotAngle*0.2));
+	vec2 normedMouse = normalize(vec2(mouseX * 2.0 - 1.0, mouseY * 2.0 - 1.0));
+	//cos, 0, sin
+	//0, 1, 0
+	//-sin, 0, cos
+	float rotAngle = pi * 0.5;
+	mat3 pointRight = mat3 (cos (rotAngle), 0.0, sin(rotAngle),
+						  0.0, 1.0, 0.0,
+						  -sin (rotAngle), 0.0, cos (rotAngle));
 
-	vec3 rotatedPos = vec3 (position.x, rotation * position.yz);
-	vec3 rotatedNorm = vec3 (normal.x, rotation * normal.yz);
+	vec2 currentLookAt = vec2(1.0, 0.0);
+	float mouseInUpperHalf = float(mouseY < 0.0);
+	float ac = acos(dot(normedMouse, currentLookAt));
+	float lookAtAngle = (1.0 - mouseInUpperHalf) * ac + mouseInUpperHalf * (pi*2.0 - ac);
 
-	vec2 newXZPos = rotation * rotatedPos.xz;
-	vec2 newXZNorm = rotation * rotatedNorm.xz;
-	rotatedPos = vec3 (newXZPos.x, rotatedPos.y, newXZPos.y);
-	rotatedNorm = vec3 (newXZNorm.x, rotatedNorm.y, newXZNorm.y);
+	//cos -sin 0
+	//sin cos 0
+	//0 0 1
+	mat3 lookAt = mat3 (cos(lookAtAngle), -sin(lookAtAngle), 0.0,
+						sin(lookAtAngle), cos(lookAtAngle), 0.0,
+						0.0, 0.0, 1.0);
+
+	vec3 rotatedPos = lookAt * pointRight * position;
+	vec3 rotatedNorm = lookAt * pointRight * normal;
 
 	float azimuthAmp = 10.5;
 	float inclinationAmp = 10.5;
