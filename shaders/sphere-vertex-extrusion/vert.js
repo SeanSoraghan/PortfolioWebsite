@@ -32,7 +32,7 @@ void main()
 	float inclinationAmpEnv = (sin (time * 0.15) * 3.0) * rms;
 	float azimuthAmpEnv = (sin (time * 0.1) * 0.5 + 0.5) * rms;
 	vec3 extruded = rotatedPos + rotatedNorm * sin (azimuth * 20.0 + time * azimuth) * azimuthAmp * azimuthAmpEnv
-							   + rotatedNorm * sin (inclination * 5.0 + mouseX * pi * 2.0) * (inclinationAmp + inclinationAmpEnv);
+							   + rotatedNorm * sin (inclination * 5.0 + envTime * pi * 2.0) * (inclinationAmp + inclinationAmpEnv);
 
 	norm = rotatedNorm;
 	vert = extruded;

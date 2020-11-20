@@ -352,6 +352,8 @@
                         if (sustainTime < minT)
                             sustainTime = minT
                         demoSynth.sustainTime = segmentTime;
+
+                        console.log('synth env time: ' + demoSynth.getTotalEnvTime());
                     }
                 }
                 threeDemo.mouseHandler = mouseHandler;

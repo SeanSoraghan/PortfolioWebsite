@@ -331,7 +331,7 @@ function Synth(audioCtx, windowSize, waveformType, freq)
         {
             if (audioCtx.currentTime > synth.lastTriggerTime + synth.getTotalEnvTime())
                 return 0.0;
-            return (audioCtx.currentTime - synth.lastTriggerTime) / (synth.lastTriggerTime + synth.getTotalEnvTime());
+            return (audioCtx.currentTime - synth.lastTriggerTime) / synth.getTotalEnvTime();
         }
         synth.sustainReached = function()
         {
