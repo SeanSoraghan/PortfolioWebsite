@@ -416,6 +416,9 @@
 
             var fn_load_content = function(i_section_index)
             {
+                if (demoSynth)
+                    demoSynth.killOscs();
+
                 if (i_section_index == 0)
                 {
                     collapse_div('#demos');
