@@ -26,9 +26,9 @@ void main()
 						  -sin (rotAngle), 0.0, cos (rotAngle));
 
 	vec2 currentLookAt = vec2(1.0, 0.0);
-	float mouseInUpperHalf = float(mouseY < 0.0);
-	float ac = acos(dot(normedMouse, currentLookAt));
-	float lookAtAngle = (1.0 - mouseInUpperHalf) * ac + mouseInUpperHalf * (pi*2.0 - ac);
+	float mouseInUpperHalf = float(normedMouse.y < 0.0);
+	float rad = acos(dot(normedMouse, currentLookAt));
+	float lookAtAngle = (1.0 - mouseInUpperHalf) * rad + (mouseInUpperHalf * (2.0 * pi - rad));
 
 	//cos -sin 0
 	//sin cos 0
@@ -45,7 +45,7 @@ void main()
 	float inclinationAmpEnv = (sin (time * 0.15) * 3.0) * rms;
 	float azimuthAmpEnv = (sin (time * 0.1) * 0.5 + 0.5) * rms;
 	vec3 extruded = rotatedPos + rotatedNorm * sin (azimuth * 20.0 + time * azimuth) * azimuthAmp * azimuthAmpEnv
-							   + rotatedNorm * sin (inclination * 5.0 + envTime * pi * 2.0) * (inclinationAmp + inclinationAmpEnv);
+							   + rotatedNorm * sin (inclination * 5.0 + (pi + envTime * 2.0 * pi)) * (inclinationAmp + inclinationAmpEnv);
 
 	norm = rotatedNorm;
 	vert = extruded;
