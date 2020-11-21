@@ -176,7 +176,7 @@
             <script>
                 $('#demos').hide(0, function(){});
             </script>
-            <div id="outro" class="img-background about-outro-img fill-inner-height full-width">
+            <!-- <div id="outro" class="img-background about-outro-img fill-inner-height full-width">
                 <div class="grid-y fill-inner-height">
                     <div class="cell small-10"></div>
                     <div id="outro-text" class="cell small-1">
@@ -192,7 +192,7 @@
             </div>
             <script>
                 $('#outro').hide(0, function(){});
-            </script>
+            </script> -->
         </div>
 
         <!-- ================================================================================================= -->
@@ -202,9 +202,9 @@
         <script>
             var nav_left = null;
             var nav_right = null;
-            var i_num_sections = 5;
+            var i_num_sections = 4;
             var nav_horizontal_buttons = [];
-            $('#horizontal_nav').load('html-blocks/horizontal-navigation-5.html');
+            $('#horizontal_nav').load('html-blocks/horizontal-navigation-4.html');
         </script>
 
         <!-- ================================================================================================= -->
@@ -422,7 +422,7 @@
                     collapse_div('#outro');
                     expand_div("#intro");
                 }
-                else if (i_section_index < i_num_sections - 1)
+                else //if (i_section_index < i_num_sections - 1)
                 {
                     collapse_div("#intro");
                     expand_div("#demos", function()
@@ -437,13 +437,13 @@
                         }
                     });
                 }
-                else
+                /* else
                 {
                     collapse_div("#intro");
                     collapse_div("#demos")
                     expand_div("#outro");
                     $("#outro").show();
-                }
+                } */
             }
         </script>
         <script src="js/nav_dynamic.js"></script>
