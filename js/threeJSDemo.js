@@ -186,6 +186,8 @@ function ThreeJSDemo (containerID, canvasID, fragURL, vertURL, shadersLoadedCall
             var mappedMouse = t.getNormedMousePos(mouseEvent);
             if (mappedMouse.x <= 1.0 && mappedMouse.y <= 1.0 && mappedMouse.x >= 0.0 && mappedMouse.y >= 0.0)
             {
+                t.mouseX = mappedMouse.x
+                t.mouseY = mappedMouse.y
                 t.mouseHandler.mouseDown(mappedMouse);
             }
         }
