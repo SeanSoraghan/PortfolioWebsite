@@ -260,7 +260,7 @@
                         demoContext.uniforms.rms.value = demoSynth.rms * 5.0;
                         demoContext.uniforms.pitch.value = (demoSynth.centreFrequency - minFreq) / (maxFreq - minFreq);
                         // harmonicsMultiplier goes from 0. - 0.5.
-                        demoContext.uniforms.detune.value = 1.0 - demoSynth.harmonicsMultiplier;//demoSynth.harmonicsMultiplier + 0.5;
+                        demoContext.uniforms.detune.value = 1.0 - demoSynth.harmonicsMultiplier;
                     }
                 }
                 threeDemo.customUniformsContext = demoContext;
