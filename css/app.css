@@ -20,18 +20,18 @@
 
 /* Page backgrounds */
 .home-page-img{
-    background: url("../images/HomeBackground.png");
+    background: url("../images/HomeBackground.jpg");
 }
 .about-page-img{
-    background: url("../images/AboutBackground.png");
+    background: url("../images/AboutBackground.jpg");
 }
 
 .plugins-page-img{
-    background: url("../images/PluginsBackground.png");
+    background: url("../images/PluginsBackground.jpg");
 }
 
 .games-page-img{
-    background: url("../images/GamesBackground.png");
+    background: url("../images/GamesBackground.jpg");
 }
 
 .page-background{
@@ -61,7 +61,7 @@
     background-attachment: scroll;
 }
 .icon-img{
-    background: url("../images/icon-main.png") no-repeat;
+    background: url("../images/icon-main.jpg") no-repeat;
 	background-size: cover;
 	background-position: center center;
     width: 40px;
